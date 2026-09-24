@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>OpenID Federation Well-Known Binding 1.0</title>
+<meta content="Dick Hardt" name="author">
+<meta content="
+       This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs  , and to documents those documents reference, such as JSON Web Key Sets. The Entity signs digests of these documents in its own Entity Configuration. A verifier holding a Trust Anchor key can then authenticate them, and the keys they lead to, without relying on DNS or the Web PKI. The documents are served unchanged, and the Trust Anchor re-signs nothing when they change. For a JWK Set, this is an alternative to  signed_jwks_uri  that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile. 
+       Optionally, a well-known document that is a JSON object or a JWT can also state which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of its counterparties. 
+    " name="description">
+<meta content="xml2rfc 3.34.1" name="generator">
+<meta content="federation" name="keyword">
+<meta content="trust mark" name="keyword">
+<meta content="well-known" name="keyword">
+<meta content="metadata" name="keyword">
+<meta content="jwks" name="keyword">
+<meta content="digest" name="keyword">
+<meta name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.34.1
+    Python 3.10.21
+    ConfigArgParse 1.7.7
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.1.3
+    natsort 8.4.0
+    platformdirs 4.11.12
+    pycountry 26.2.16
+    PyYAML 6.0.3
+    requests 2.34.2
+    wcwidth 0.9.1
+-->
+<link href="openid-federation-well-known-binding-1_0.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necessary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
+@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
+@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
+
+:root {
+  --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Noto Serif', 'Times', 'Times New Roman', serif;
+  --font-mono: 'Roboto Mono', Courier, 'Courier New', monospace;
+}
+
+@viewport {
+  zoom: 1.0;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  overflow-wrap: break-word;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+@media print {
+  svg {
+    max-height: 850px;
+    max-width: 660px;
+  }
+}
+svg[font-family~="serif" i], svg [font-family~="serif" i] {
+  font-family: var(--font-serif);
+}
+svg[font-family~="sans-serif" i], svg [font-family~="sans-serif" i] {
+  font-family: var(--font-sans);
+}
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  display: table;
+  border: none;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre {
+  background-color: #f9f9f9;
+  font-family: var(--font-mono);
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+blockquote > *:last-child {
+  margin-bottom: 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+.xref {
+  overflow-wrap: normal;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+sub,
+sup {
+ white-space: nowrap;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+/* Fix PDF info block run off issue */
+@media print {
+  #identifiers dd {
+    max-width: 100%;
+  }
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.refSubseries {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: var(--font-sans);
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  .breakable pre {
+    break-inside: auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The following is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+.sourcecode pre,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+  table {
+    page-break-inside: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .artwork > pre,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: upper-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background slightly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr {
+  break-inside: avoid;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: auto;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottom margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code, dt tt, dt code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the compact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > blockquote:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div.sourcecode:first-child,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type:only-child {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">async function addMetadata(){try{const e=document.styleSheets[0].cssRules;for(let t=0;t<e.length;t++)if(/#identifiers/.exec(e[t].selectorText)){const a=e[t].cssText.replace("#identifiers","#external-updates");document.styleSheets[0].insertRule(a,document.styleSheets[0].cssRules.length)}}catch(e){console.log(e)}const e=document.getElementById("external-metadata");if(e)try{var t,a="",o=function(e){const t=document.getElementsByTagName("meta");for(let a=0;a<t.length;a++)if(t[a].getAttribute("name")===e)return t[a].getAttribute("content");return""}("rfc.number");if(o){t="https://www.rfc-editor.org/rfc/rfc"+o+".json";try{const e=await fetch(t);a=await e.json()}catch(e){t=document.URL.indexOf("html")>=0?document.URL.replace(/html$/,"json"):document.URL+".json";const o=await fetch(t);a=await o.json()}}if(!a)return;e.style.display="block";const s="",d="https://datatracker.ietf.org/doc",n="https://datatracker.ietf.org/ipr/search",c="https://www.rfc-editor.org/info",l=a.doc_id.toLowerCase(),i=a.doc_id.slice(0,3).toLowerCase(),f=a.doc_id.slice(3).replace(/^0+/,""),u={status:"Status",obsoletes:"Obsoletes",obsoleted_by:"Obsoleted By",updates:"Updates",updated_by:"Updated By",see_also:"See Also",errata_url:"Errata"};let h="<dl style='overflow:hidden' id='external-updates'>";["status","obsoletes","obsoleted_by","updates","updated_by","see_also","errata_url"].forEach(e=>{if("status"==e){a[e]=a[e].toLowerCase();var t=a[e].split(" "),o=t.length,w="",p=1;for(let e=0;e<o;e++)p<o?w=w+r(t[e])+" ":w+=r(t[e]),p++;a[e]=w}else if("obsoletes"==e||"obsoleted_by"==e||"updates"==e||"updated_by"==e){var g,m="",b=1;g=a[e].length;for(let t=0;t<g;t++)a[e][t]&&(a[e][t]=String(a[e][t]).toLowerCase(),m=b<g?m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>, ":m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>",b++);a[e]=m}else if("see_also"==e){var y,L="",C=1;y=a[e].length;for(let t=0;t<y;t++)if(a[e][t]){a[e][t]=String(a[e][t]);var _=a[e][t].slice(0,3),v=a[e][t].slice(3).replace(/^0+/,"");L=C<y?"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>, ":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>, ":"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>",C++}a[e]=L}else if("errata_url"==e){var R="";R=a[e]?R+"<a href='"+a[e]+"'>Errata exist</a> | <a href='"+d+"/"+l+"'>Datatracker</a>| <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>":"<a href='"+d+"/"+l+"'>Datatracker</a> | <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>",a[e]=R}""!=a[e]?"Errata"==u[e]?h+=`<dt>More info:</dt><dd>${a[e]}</dd>`:h+=`<dt>${u[e]}:</dt><dd>${a[e]}</dd>`:"Errata"==u[e]&&(h+=`<dt>More info:</dt><dd>${a[e]}</dd>`)}),h+="</dl>",e.innerHTML=h}catch(e){console.log(e)}else console.log("Could not locate metadata <div> element");function r(e){return e.charAt(0).toUpperCase()+e.slice(1)}}window.removeEventListener("load",addMetadata),window.addEventListener("load",addMetadata);</script>
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left"></td>
+<td class="center">OpenID-Federation-WK-Binding</td>
+<td class="right">September 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Hardt</td>
+<td class="center">Standards Track</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">OpenID Connect</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-09-24" class="published">24 September 2026</time>
+    </dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">D. Hardt</div>
+<div class="org">Hellō</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">OpenID Federation Well-Known Binding 1.0</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>, and to documents those documents reference, such as JSON Web Key Sets. The Entity signs digests of these documents in its own Entity Configuration. A verifier holding a Trust Anchor key can then authenticate them, and the keys they lead to, without relying on DNS or the Web PKI. The documents are served unchanged, and the Trust Anchor re-signs nothing when they change. For a JWK Set, this is an alternative to <code>signed_jwks_uri</code> that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">Optionally, a well-known document that is a JSON object or a JWT can also state which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of its counterparties.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.1">
+      <h2 id="name-notices">
+<a href="#name-notices" class="section-name selfRef">Notices</a>
+      </h2>
+<p id="section-note.1-1">[OpenID Foundation copyright and IPR notices, per OIDF specification boilerplate.]<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+</section>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-non-goals" class="internal xref">Non-Goals</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-overview" class="internal xref">Overview</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-well-known-documents-metada" class="internal xref">Well-Known Documents Metadata</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-document-location" class="internal xref">Document Location</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-digest-computation" class="internal xref">Digest Computation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-covered-documents-that-are-" class="internal xref">Covered Documents That Are JWTs</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-relationship-to-inline-meta" class="internal xref">Relationship to Inline Metadata</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
+                <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-relationship-to-federation-" class="internal xref">Relationship to Federation JWK Set Parameters</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
+                <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-superior-supplied-metadata" class="internal xref">Superior-Supplied Metadata</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-trust-marks-in-well-known-d" class="internal xref">Trust Marks in Well-Known Documents</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-trust-mark-types" class="internal xref">trust<em>mark</em>types</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-trust-mark-types_required" class="internal xref">trust<em>mark</em>types_required</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-verification" class="internal xref">Verification</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-caching" class="internal xref">Caching</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-updates-and-key-rotation" class="internal xref">Updates and Key Rotation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-protocol-key-rotation" class="internal xref">Protocol Key Rotation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-federation-key-rotation" class="internal xref">Federation Key Rotation</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-trust-mark-requirement-erro" class="internal xref">Trust Mark Requirement Errors</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-what-the-trust-anchor-attes" class="internal xref">What the Trust Anchor Attests</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-dns-and-transport" class="internal xref">DNS and Transport</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-federation-key-compromise" class="internal xref">Federation Key Compromise</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="auto internal xref">10.4</a>.  <a href="#name-trust-anchor-key-rollover" class="internal xref">Trust Anchor Key Rollover</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
+                <p id="section-toc.1-1.10.2.5.1"><a href="#section-10.5" class="auto internal xref">10.5</a>.  <a href="#name-published-requirements-are-" class="internal xref">Published Requirements Are Not Enforcement</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.6">
+                <p id="section-toc.1-1.10.2.6.1"><a href="#section-10.6" class="auto internal xref">10.6</a>.  <a href="#name-unauthenticated-content-bef" class="internal xref">Unauthenticated Content Before Verification</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.7">
+                <p id="section-toc.1-1.10.2.7.1"><a href="#section-10.7" class="auto internal xref">10.7</a>.  <a href="#name-unreferenced-urls" class="internal xref">Unreferenced URLs</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.8">
+                <p id="section-toc.1-1.10.2.8.1"><a href="#section-10.8" class="auto internal xref">10.8</a>.  <a href="#name-trust-mark-selection" class="internal xref">Trust Mark Selection</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.9">
+                <p id="section-toc.1-1.10.2.9.1"><a href="#section-10.9" class="auto internal xref">10.9</a>.  <a href="#name-byte-exact-digests" class="internal xref">Byte-Exact Digests</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.10">
+                <p id="section-toc.1-1.10.2.10.1"><a href="#section-10.10" class="auto internal xref">10.10</a>. <a href="#name-resolution-cost" class="internal xref">Resolution Cost</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-oauth-authorization-server-" class="internal xref">OAuth Authorization Server Metadata</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-oauth-protected-resource-me" class="internal xref">OAuth Protected Resource Metadata</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
+                <p id="section-toc.1-1.12.2.3.1"><a href="#section-12.3" class="auto internal xref">12.3</a>.  <a href="#name-oauth-extensions-error" class="internal xref">OAuth Extensions Error</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-open-issues" class="internal xref">Open Issues</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-document-history" class="internal xref">Document History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#section-16" class="auto internal xref">16</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
+            <p id="section-toc.1-1.17.1"><a href="#section-17" class="auto internal xref">17</a>. <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18">
+            <p id="section-toc.1-1.18.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18.2.1">
+                <p id="section-toc.1-1.18.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-aauth-person-server" class="internal xref">AAuth Person Server</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18.2.2">
+                <p id="section-toc.1-1.18.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-collocated-roles" class="internal xref">Collocated Roles</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18.2.3">
+                <p id="section-toc.1-1.18.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-path-based-entity-identifie" class="internal xref">Path-Based Entity Identifier</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19">
+            <p id="section-toc.1-1.19.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-design-rationale" class="internal xref">Design Rationale</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.1">
+                <p id="section-toc.1-1.19.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-why-federation_entity-metad" class="internal xref">Why <code>federation_entity</code> Metadata</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.2">
+                <p id="section-toc.1-1.19.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-why-keyed-by-well-known-suf" class="internal xref">Why Keyed by Well-Known Suffix</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.3">
+                <p id="section-toc.1-1.19.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-why-the-document-states-its" class="internal xref">Why the Document States Its Trust Marks</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.4">
+                <p id="section-toc.1-1.19.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-why-json-objects-and-jwts-o" class="internal xref">Why JSON Objects and JWTs Only</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.5">
+                <p id="section-toc.1-1.19.2.5.1"><a href="#appendix-B.5" class="auto internal xref">B.5</a>.  <a href="#name-why-the-entity-signs-the-di" class="internal xref">Why the Entity Signs the Digests</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.6">
+                <p id="section-toc.1-1.19.2.6.1"><a href="#appendix-B.6" class="auto internal xref">B.6</a>.  <a href="#name-why-not-sign-the-documents" class="internal xref">Why Not Sign the Documents</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.7">
+                <p id="section-toc.1-1.19.2.7.1"><a href="#appendix-B.7" class="auto internal xref">B.7</a>.  <a href="#name-why-the-binding-stands-apar" class="internal xref">Why the Binding Stands Apart from Trust Marks</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.8">
+                <p id="section-toc.1-1.19.2.8.1"><a href="#appendix-B.8" class="auto internal xref">B.8</a>.  <a href="#name-why-uri-only-for-path-based" class="internal xref">Why <code>uri</code> Only for Path-Based Identifiers</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.9">
+                <p id="section-toc.1-1.19.2.9.1"><a href="#appendix-B.9" class="auto internal xref">B.9</a>.  <a href="#name-why-arrays-of-digests" class="internal xref">Why Arrays of Digests</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.10">
+                <p id="section-toc.1-1.19.2.10.1"><a href="#appendix-B.10" class="auto internal xref">B.10</a>. <a href="#name-why-digest_alg-and-base64ur" class="internal xref">Why <code>digest_alg</code> and base64url</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.11">
+                <p id="section-toc.1-1.19.2.11.1"><a href="#appendix-B.11" class="auto internal xref">B.11</a>. <a href="#name-why-requirements-are-keyed-" class="internal xref">Why Requirements Are Keyed by Well-Known Suffix</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.12">
+                <p id="section-toc.1-1.19.2.12.1"><a href="#appendix-B.12" class="auto internal xref">B.12</a>. <a href="#name-why-trust-mark-issuance-is-" class="internal xref">Why Trust Mark Issuance Is Out of Scope</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20">
+            <p id="section-toc.1-1.20.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Many protocols have their servers publish metadata at a well-known URI <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>. Examples are OAuth 2.0 Authorization Server Metadata <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, and the AAuth Protocol <span>[<a href="#I-D.hardt-oauth-aauth-protocol" class="cite xref">I-D.hardt-oauth-aauth-protocol</a>]</span>. Signing keys are then found by following a <code>jwks_uri</code> member of that document. Both documents are fetched over HTTPS. The binding between a server's identifier and its keys therefore rests on DNS and the Web PKI: whoever can answer for the origin can publish keys for it.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">That is sufficient for many deployments. It is not sufficient where the Web PKI is not an acceptable root of trust for protocol keys, or where a party needs to know more than "this origin published these keys", for example that the origin belongs to an accredited payment institution.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">OpenID Federation 1.0 <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> provides a Trust Chain of Entity Statements that binds an Entity's Federation Entity Keys to its Entity Identifier independently of the Web PKI, and Trust Marks that express accreditation of an Entity by a third party. OpenID Federation carries protocol metadata inline in Entity Statements, and binds a JWK Set through inline <code>jwks</code> or through <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1). It does not authenticate documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This specification provides that binding <a href="#well-known-documents" class="auto internal xref">Section 5</a>. An Entity's Entity Configuration carries, in its <code>federation_entity</code> metadata, digests of its well-known documents and of documents they reference by URL, such as the JWK Set at <code>jwks_uri</code>. The Entity signs these digests with its Federation Entity Key. The Trust Anchor vouches only for that key, through the Subordinate Statement it already issues. A verifier that resolves the Trust Chain and checks the digests has authenticated the Entity's protocol metadata and protocol keys, and relies on DNS for nothing but transport.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">The binding is useful on its own. An Entity that holds no Trust Marks, in a federation that issues none, gains a JWK Set bound to its Entity Identifier through the Trust Chain, with no change to the JWK Set or the documents it already serves.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">This specification also defines, as an optional addition, two members with which a well-known document that is a JSON object or a JWT states which of the Entity's Trust Marks are relevant to the role it describes, and which Trust Marks the Entity requires of the Entities it deals with <a href="#trust-marks-in-documents" class="auto internal xref">Section 6</a>. Because the document is digest-bound, these statements are authenticated.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<div id="non-goals">
+<section id="section-1.1">
+        <h3 id="name-non-goals">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-non-goals" class="section-name selfRef">Non-Goals</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="section-1.1-1.1">
+            <p id="section-1.1-1.1.1"><strong>Not a change to OpenID Federation.</strong> This specification defines metadata parameters for the <code>federation_entity</code> Entity Type (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.1.1) and nothing else inside federation statements.<a href="#section-1.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-1.2">
+            <p id="section-1.1-1.2.1"><strong>Not a change to the protocols whose documents are bound.</strong> Documents are served unchanged at their existing locations. The protocol's own processing of a document is unchanged, including its checks on identifier members such as <code>issuer</code>. This specification adds two members that a JSON-object or JWT document can carry, and a check on the documents from which verification keys are taken.<a href="#section-1.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-1.3">
+            <p id="section-1.1-1.3.1"><strong>Not Trust Mark issuance.</strong> Out of scope are which parties issue which Trust Marks, what a given Trust Mark certifies, and how an Entity obtains one.<a href="#section-1.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-1.4">
+            <p id="section-1.1-1.4.1"><strong>Not mandatory.</strong> A verifier decides by its own policy whether to require federation verification for a given peer.<a href="#section-1.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-2">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-2-1">{::boilerplate bcp14-tagged}<a href="#section-2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-3">
+      <h2 id="name-terminology">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<p id="section-3-1">Terms defined in <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> are used with the same meaning, in particular Entity, Entity Identifier, Entity Statement, Entity Configuration, Subordinate Statement, Superior, Trust Anchor, Trust Chain, Trust Mark, Trust Mark Issuer, Federation Entity Keys, and Resolved Metadata.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">This specification additionally uses:<a href="#section-3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-3.1">
+          <p id="section-3-3.1.1"><strong>Well-known suffix</strong>: The path segment following <code>/.well-known/</code> in a well-known URI (<span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>, Section 3), such as <code>oauth-authorization-server</code>.<a href="#section-3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-3.2">
+          <p id="section-3-3.2.1"><strong>Covered document</strong>: A well-known document whose digest is carried in an Entity's metadata under this specification. A covered document can be in any format.<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-3.3">
+          <p id="section-3-3.3.1"><strong>Statement-capable document</strong>: A covered document whose content is a JSON object <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>, or a JWT <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>. For a JWT, "member" means a claim in the JWT Claims Set.<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-3.4">
+          <p id="section-3-3.4.1"><strong>Referenced document</strong>: A document located by a URL-valued top-level member of a statement-capable document, such as the JWK Set at <code>jwks_uri</code>, whose digest is also carried under this specification.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-3.5">
+          <p id="section-3-3.5.1"><strong>Digest</strong>: The base64url encoding without padding (<span>[<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>, Section 2) of the output of a hash algorithm applied to a document's content, as defined in <a href="#digest-computation" class="auto internal xref">Section 5.2</a>.<a href="#section-3-3.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="overview">
+<section id="section-4">
+      <h2 id="name-overview">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-overview" class="section-name selfRef">Overview</a>
+      </h2>
+<span id="name-verifying-an-entitys-well-k"></span><figure id="figure-1">
+        <div class="lang-ascii-art sourcecode" id="section-4-1.1">
+<pre>Verifier                 Trust Anchor              Entity
+(TA key configured       ta.example                as.example
+ out of band)
+    |                        |                          |
+    | GET /.well-known/openid-federation                |
+    |--------------------------------------------------&gt;|
+    |  Entity Configuration, signed by entity fed key:  |
+    |    jwks, authority_hints, trust_marks,            |
+    |    metadata.federation_entity.                    |
+    |      well_known_documents[&lt;suffix&gt;]               |
+    |&lt;--------------------------------------------------|
+    |                        |                          |
+    | GET fetch?sub=https://as.example                  |
+    |-----------------------&gt;|                          |
+    |  Subordinate Statement, signed by TA key:         |
+    |    jwks (entity's Federation Entity Keys)         |
+    |&lt;-----------------------|                          |
+    |                        |                          |
+    | GET /.well-known/&lt;suffix&gt;                         |
+    |--------------------------------------------------&gt;|
+    |   compare digest; read trust_mark_types           |
+    |&lt;--------------------------------------------------|
+    | GET referenced document (e.g. jwks_uri)           |
+    |--------------------------------------------------&gt;|
+    |   compare digest                                  |
+    |&lt;--------------------------------------------------|
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-verifying-an-entitys-well-k" class="selfRef">Verifying an Entity's well-known documents</a>
+        </figcaption></figure>
+<table class="center" id="table-1">
+        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Statement</th>
+            <th class="text-left" rowspan="1" colspan="1">Signed by</th>
+            <th class="text-left" rowspan="1" colspan="1">Binds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">TA Entity Configuration</td>
+            <td class="text-left" rowspan="1" colspan="1">TA Federation Entity Key</td>
+            <td class="text-left" rowspan="1" colspan="1">TA keys, <code>trust_mark_issuers</code>, <code>trust_mark_owners</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Subordinate Statement about the Entity</td>
+            <td class="text-left" rowspan="1" colspan="1">Superior's Federation Entity Key</td>
+            <td class="text-left" rowspan="1" colspan="1">Entity Identifier to the Entity's Federation Entity Keys</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Entity Configuration of the Entity</td>
+            <td class="text-left" rowspan="1" colspan="1">Entity's Federation Entity Key</td>
+            <td class="text-left" rowspan="1" colspan="1">Digests of covered and referenced documents; Trust Marks</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Trust Mark</td>
+            <td class="text-left" rowspan="1" colspan="1">Trust Mark Issuer's Federation Entity Key</td>
+            <td class="text-left" rowspan="1" colspan="1">Entity Identifier to a <code>trust_mark_type</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Covered document (through its digest)</td>
+            <td class="text-left" rowspan="1" colspan="1">—</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>trust_mark_types</code>, <code>trust_mark_types_required</code> for the role it describes</td>
+          </tr>
+        </tbody>
+      </table>
+<p id="section-4-3">The Entity signs the digests itself. Updating a covered document or rotating a protocol key therefore requires only that the Entity re-sign its own Entity Configuration. Neither a Superior nor any Trust Mark Issuer is involved.<a href="#section-4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="well-known-documents">
+<section id="section-5">
+      <h2 id="name-well-known-documents-metada">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-well-known-documents-metada" class="section-name selfRef">Well-Known Documents Metadata</a>
+      </h2>
+<p id="section-5-1">This specification defines the following parameters of <code>federation_entity</code> metadata (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.1.1):<a href="#section-5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-2.1">
+          <p id="section-5-2.1.1"><code>digest_alg</code> (OPTIONAL): String. The hash algorithm used for every digest in <code>well_known_documents</code>. It is identified by its name in the IANA "Hash Algorithms for HTTP Digest Fields" registry established by <span>[<a href="#RFC9530" class="cite xref">RFC9530</a>]</span>, and MUST have status "Active" in that registry. Default: <code>sha-256</code>. Implementations MUST support <code>sha-256</code>.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-2.2">
+          <p id="section-5-2.2.1"><code>well_known_documents</code> (OPTIONAL): JSON object. Each member name is a well-known suffix. Each member value is a JSON object with the following members:<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-2.2.2.1">
+              <p id="section-5-2.2.2.1.1"><code>digests</code> (REQUIRED): Non-empty JSON array of strings. Each element is a digest <a href="#digest-computation" class="auto internal xref">Section 5.2</a> of the covered document.<a href="#section-5-2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-5-2.2.2.2">
+              <p id="section-5-2.2.2.2.1"><code>uri</code> (OPTIONAL): String. The <code>https</code> URL of the covered document. REQUIRED when the Entity Identifier has a path component <a href="#document-location" class="auto internal xref">Section 5.1</a>.<a href="#section-5-2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-5-2.2.2.3">
+              <p id="section-5-2.2.2.3.1"><code>referenced</code> (OPTIONAL): JSON object, permitted only for a statement-capable document. Each member name is the name of a top-level member of the covered document whose value is an <code>https</code> URL. Each member value is a non-empty JSON array of digests of the document at that URL.<a href="#section-5-2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+<p id="section-5-3">A document is accepted if its digest equals any element of the corresponding array. More than one element is present only while the document is being replaced <a href="#updates" class="auto internal xref">Section 8</a>.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">If a statement-capable document contains a <code>jwks_uri</code> member, <code>referenced</code> MUST contain a <code>jwks_uri</code> member. The Entity chooses which other URL-valued members to cover. The verifier's policy determines which it requires <a href="#unreferenced-urls" class="auto internal xref">Section 10.7</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-5">Example:<a href="#section-5-5" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-5-6">
+<pre>"metadata": {
+  "federation_entity": {
+    "well_known_documents": {
+      "oauth-authorization-server": {
+        "digests": ["2hBq7vQeY0mX1kZ5p8m4a0yP3Q2c0m3m0n7Lr1ZkQ9o"],
+        "referenced": {
+          "jwks_uri": [
+            "Kq3rU8mZ4nT1bV9xW2yA5cD7eF0gH6iJ8kL1mN3oP5q"
+          ]
+        }
+      }
+    }
+  }
+}
+</pre><a href="#section-5-6" class="pilcrow">¶</a>
+</div>
+<div id="document-location">
+<section id="section-5.1">
+        <h3 id="name-document-location">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-document-location" class="section-name selfRef">Document Location</a>
+        </h3>
+<p id="section-5.1-1">If <code>uri</code> is present, it is the location of the covered document. Otherwise the Entity Identifier MUST have no path component, and the location is <code>{Entity Identifier}/.well-known/{suffix}</code>.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">Some specifications derive well-known locations for path-based identifiers by inserting the well-known path before the path component (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1; <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.1). An Entity whose Entity Identifier has a path states the location in <code>uri</code>, whatever construction its protocol uses.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="digest-computation">
+<section id="section-5.2">
+        <h3 id="name-digest-computation">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-digest-computation" class="section-name selfRef">Digest Computation</a>
+        </h3>
+<p id="section-5.2-1">A digest is computed over the content of the HTTP response that delivered the document, after removing any content codings (<span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, Section 8.4). The input is the exact octets, with no parsing, canonicalization, or re-serialization. For a JWT, these are the octets of its serialization as delivered. The hash algorithm is <code>digest_alg</code>. The digest value is the base64url encoding of the hash output without padding (<span>[<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>, Section 2).<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">While a given digest is published, the Entity MUST serve the covered and referenced documents with octets that do not vary between requests, including by content negotiation or by requester. Intermediaries that transform content, such as minification or re-serialization, break verification. The Entity SHOULD serve these documents with <code>Cache-Control: no-transform</code> (<span>[<a href="#RFC9111" class="cite xref">RFC9111</a>]</span>, Section 5.2.2.6).<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">A document whose content varies per request cannot be a covered or referenced document.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="covered-documents-that-are-jwts">
+<section id="section-5.3">
+        <h3 id="name-covered-documents-that-are-">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-covered-documents-that-are-" class="section-name selfRef">Covered Documents That Are JWTs</a>
+        </h3>
+<p id="section-5.3-1">A covered document that is a JWT is authenticated by its digest under this specification, whether or not the verifier also validates the JWT's signature. The protocol that defines the document determines whether and how its signature is validated. This specification does not change that.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="relationship-to-inline-metadata">
+<section id="section-5.4">
+        <h3 id="name-relationship-to-inline-meta">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-relationship-to-inline-meta" class="section-name selfRef">Relationship to Inline Metadata</a>
+        </h3>
+<p id="section-5.4-1">An Entity can also publish, inline in its Entity Configuration, metadata for an Entity Type whose parameters appear in a covered document. The inline metadata and the covered document can both contain a parameter with different values. In that case the verifier MUST treat verification as failed, unless the specification defining that Entity Type states which source is authoritative.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="jwks-parameters">
+<section id="section-5.5">
+        <h3 id="name-relationship-to-federation-">
+<a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-relationship-to-federation-" class="section-name selfRef">Relationship to Federation JWK Set Parameters</a>
+        </h3>
+<p id="section-5.5-1">OpenID Federation binds a protocol JWK Set to an Entity in two ways (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1): inline in Entity Type metadata as <code>jwks</code>, or as a JWT signed with a Federation Entity Key and located by <code>signed_jwks_uri</code>. A <code>jwks_uri</code> entry in <code>referenced</code> is a third way:<a href="#section-5.5-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Binding</th>
+              <th class="text-left" rowspan="1" colspan="1">JWK Set as served</th>
+              <th class="text-left" rowspan="1" colspan="1">On protocol key rotation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>jwks</code> in Entity Type metadata</td>
+              <td class="text-left" rowspan="1" colspan="1">Not served separately</td>
+              <td class="text-left" rowspan="1" colspan="1">Entity re-signs its Entity Configuration, or Superior re-issues its Subordinate Statement if the Superior supplies it</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>signed_jwks_uri</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">JWT signed with a Federation Entity Key</td>
+              <td class="text-left" rowspan="1" colspan="1">Entity re-signs the JWK Set JWT</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>jwks_uri</code> in <code>referenced</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">Plain JSON, unchanged</td>
+              <td class="text-left" rowspan="1" colspan="1">Entity re-signs its Entity Configuration <a href="#updates" class="auto internal xref">Section 8</a>
+</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-5.5-3">With a <code>jwks_uri</code> entry in <code>referenced</code>, verifiers that do not use OpenID Federation continue to fetch and use the same JWK Set at the same URL. The Entity keeps one JWK Set, whether or not a given verifier checks the binding.<a href="#section-5.5-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="superior-supplied-metadata">
+<section id="section-5.6">
+        <h3 id="name-superior-supplied-metadata">
+<a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-superior-supplied-metadata" class="section-name selfRef">Superior-Supplied Metadata</a>
+        </h3>
+<p id="section-5.6-1">Verifiers use the Resolved Metadata (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6). A Superior MAY supply or override the parameters defined here with <code>metadata</code> in its Subordinate Statement. It MAY also constrain them with <code>metadata_policy</code>, for example with <code>one_of</code> on <code>digest_alg</code>. A Superior that supplies digests becomes responsible for sequencing updates to them <a href="#updates" class="auto internal xref">Section 8</a>. This specification RECOMMENDS that Superiors leave digests to the Entity and constrain only <code>digest_alg</code>.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="trust-marks-in-documents">
+<section id="section-6">
+      <h2 id="name-trust-marks-in-well-known-d">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-trust-marks-in-well-known-d" class="section-name selfRef">Trust Marks in Well-Known Documents</a>
+      </h2>
+<p id="section-6-1">This section is OPTIONAL to implement. The binding in <a href="#well-known-documents" class="auto internal xref">Section 5</a> does not depend on it.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">An Entity's Trust Marks are carried in the <code>trust_marks</code> claim of its Entity Configuration (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 3.1.2), and validated per <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 7.3. This specification does not carry Trust Mark JWTs anywhere else, and does not alter them. A Trust Mark says nothing about covered documents or keys, and is unaffected when they change.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">A statement-capable document MAY contain the two members defined below. The document states them for the role it describes. They are authenticated by the document's digest. When one origin serves several roles, each role's document makes its own statements.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">Specifications defining well-known documents generally require unrecognized members to be ignored (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 2; <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 2), so adding these members does not affect existing consumers.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<div id="trust-mark-types">
+<section id="section-6.1">
+        <h3 id="name-trust-mark-types">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-trust-mark-types" class="section-name selfRef">trust<em>mark</em>types</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="section-6.1-1.1">
+            <p id="section-6.1-1.1.1"><code>trust_mark_types</code> (OPTIONAL): JSON array of strings. Each element is the <code>trust_mark_type</code> of a Trust Mark in the Entity's Entity Configuration that the Entity presents as relevant to the role this document describes.<a href="#section-6.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-6.1-2">An Entity Configuration can hold Trust Marks for many purposes, and <code>trust_mark_types</code> selects those that apply to this role. A verifier evaluating the Entity in that role considers only the listed types. A listed type with no valid Trust Mark in the Entity Configuration is treated as not held.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-mark-types-required">
+<section id="section-6.2">
+        <h3 id="name-trust-mark-types_required">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-trust-mark-types_required" class="section-name selfRef">trust<em>mark</em>types_required</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="section-6.2-1.1">
+            <p id="section-6.2-1.1.1"><code>trust_mark_types_required</code> (OPTIONAL): JSON object. Each member name is the well-known suffix of the document that describes a counterparty role. Each member value is a non-empty JSON array of <code>trust_mark_type</code> strings that an Entity in that role MUST hold for this Entity to deal with it in this role.<a href="#section-6.2-1.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-6.2-2">A counterparty meets a requirement when both of the following hold:<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.2-3">
+<li id="section-6.2-3.1">
+            <p id="section-6.2-3.1.1">It holds a valid Trust Mark (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 7.3) of each required type.<a href="#section-6.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-6.2-3.2">
+            <p id="section-6.2-3.2.1">It lists each required type in <code>trust_mark_types</code> of its covered document with that well-known suffix.<a href="#section-6.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-6.2-4">Example: an OAuth protected resource that deals only with authorization servers holding a payment-institution Trust Mark:<a href="#section-6.2-4" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-6.2-5">
+<pre>{
+  "resource": "https://api.bank.example",
+  "authorization_servers": ["https://as.bank.example"],
+  "jwks_uri": "https://api.bank.example/jwks",
+  "trust_mark_types": [
+    "https://openfinance.example/marks/account-servicing"
+  ],
+  "trust_mark_types_required": {
+    "oauth-authorization-server": [
+      "https://openfinance.example/marks/payment-institution"
+    ]
+  }
+}
+</pre><a href="#section-6.2-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6.2-6"><code>trust_mark_types_required</code> is a declaration for discovery. It lets a client learn before a call that the server will refuse it. It also lets an operator learn what it needs to obtain to be reachable. The Entity enforces its requirements from its own policy, whether or not it publishes them <a href="#published-requirements" class="auto internal xref">Section 10.5</a>.<a href="#section-6.2-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="verification">
+<section id="section-7">
+      <h2 id="name-verification">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
+      </h2>
+<p id="section-7-1">A verifier whose policy requires federation verification for a peer performs the following steps when it discovers the peer's well-known document. These are in addition to the checks defined by the peer's protocol.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7-2">
+<li id="section-7-2.1">
+          <p id="section-7-2.1.1">Fetch the peer's Entity Configuration. Resolve and validate a Trust Chain from it to one of the verifier's configured Trust Anchors (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10), obtaining the Resolved Metadata. The Entity Identifier MUST equal the identifier the protocol uses for the peer.<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.2">
+          <p id="section-7-2.2.1">Take the member of <code>well_known_documents</code> in the Resolved Metadata for <code>federation_entity</code> whose name is the well-known suffix being discovered. If it is absent, verification fails.<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.3">
+          <p id="section-7-2.3.1">Determine the document's location <a href="#document-location" class="auto internal xref">Section 5.1</a> and fetch it. Compute its digest with <code>digest_alg</code>, and compare it to <code>digests</code>. If no element matches, verification fails.<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.4">
+          <p id="section-7-2.4.1">For each member of <code>referenced</code>, take the URL from that member of the covered document and fetch the document. Compute its digest and compare it to the listed digests. If the covered document lacks the member, or no element matches, verification fails.<a href="#section-7-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.5">
+          <p id="section-7-2.5.1">If the verifier's policy requires Trust Marks of the peer, check each required type. The type MUST appear in the covered document's <code>trust_mark_types</code>. The Entity Configuration MUST contain a Trust Mark of that type that validates per <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 7.3, with <code>sub</code> equal to the Entity Identifier.<a href="#section-7-2.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="section-7-3">The verifier uses the covered document and any referenced document only after these steps succeed. This includes keys from a referenced JWK Set.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<div id="caching">
+<section id="section-7.1">
+        <h3 id="name-caching">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-caching" class="section-name selfRef">Caching</a>
+        </h3>
+<p id="section-7.1-1">A verifier MAY cache the outcome of verification until the expiration time of the Trust Chain (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10.4), which is no later than the Entity Configuration's <code>exp</code>. It MUST NOT use a cached Entity Configuration after its <code>exp</code>. A verifier may re-fetch a covered or referenced document within that period, for example on an unknown <code>kid</code>. When it does, it checks the new content against the digests in its cached Resolved Metadata.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="updates">
+<section id="section-8">
+      <h2 id="name-updates-and-key-rotation">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-updates-and-key-rotation" class="section-name selfRef">Updates and Key Rotation</a>
+      </h2>
+<p id="section-8-1">Replacing a covered or referenced document changes its digest. The Entity overlaps the old and new digests. That way no verifier holding a valid cached Entity Configuration sees a document it cannot match.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8-2">
+<li id="section-8-2.1">
+          <p id="section-8-2.1.1">Issue an Entity Configuration whose digest array contains both the current digest and the digest of the replacement document.<a href="#section-8-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-8-2.2">
+          <p id="section-8-2.2.1">Wait until every Entity Configuration that lists only the current digest has passed its <code>exp</code>.<a href="#section-8-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-8-2.3">
+          <p id="section-8-2.3.1">Replace the document.<a href="#section-8-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-8-2.4">
+          <p id="section-8-2.4.1">Issue Entity Configurations whose digest array contains only the new digest.<a href="#section-8-2.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="section-8-3">Step 4 can happen with the Entity Configuration's next routine re-issue. The Entity's chosen Entity Configuration lifetime bounds the wait in step 2. Entities that update their documents often SHOULD use a short <code>exp</code>.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<div id="protocol-key-rotation">
+<section id="section-8.1">
+        <h3 id="name-protocol-key-rotation">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-protocol-key-rotation" class="section-name selfRef">Protocol Key Rotation</a>
+        </h3>
+<p id="section-8.1-1">An Entity SHOULD keep two or three keys in a referenced JWK Set, and rotate by replacing the oldest key with a new one. Each rotation is one JWK Set replacement, performed by the procedure above. The Entity MUST NOT sign with the new key before step 3 has completed.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="federation-key-rotation">
+<section id="section-8.2">
+        <h3 id="name-federation-key-rotation">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-federation-key-rotation" class="section-name selfRef">Federation Key Rotation</a>
+        </h3>
+<p id="section-8.2-1">Rotation of the Entity's Federation Entity Keys follows <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 11. It does not affect covered documents, referenced documents, digests or Trust Marks.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="errors">
+<section id="section-9">
+      <h2 id="name-trust-mark-requirement-erro">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-trust-mark-requirement-erro" class="section-name selfRef">Trust Mark Requirement Errors</a>
+      </h2>
+<p id="section-9-1">This specification defines an error that a protocol MAY adopt. An Entity returns it when it refuses to deal with a counterparty because the counterparty does not meet its Trust Mark requirements. A protocol that uses JSON error responses with an <code>error</code> member conveys it with these members:<a href="#section-9-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-2.1">
+          <p id="section-9-2.1.1"><code>error</code>: <code>trust_mark_required</code><a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-9-2.2">
+          <p id="section-9-2.2.1"><code>entity</code> (REQUIRED): The Entity Identifier of the counterparty that does not meet the requirement.<a href="#section-9-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-9-2.3">
+          <p id="section-9-2.3.1"><code>trust_mark_types</code> (REQUIRED): JSON array of the required <code>trust_mark_type</code> values that the counterparty did not meet.<a href="#section-9-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-9-3">The adopting protocol defines the HTTP status code and where the error is returned. When the error concerns an intermediary rather than the requesting party, a party that receives it relays it unchanged.<a href="#section-9-3" class="pilcrow">¶</a></p>
+<p id="section-9-4">A peer that fails federation verification <a href="#verification" class="auto internal xref">Section 7</a> has not been refused on Trust Marks. The protocol reports it as a metadata or key discovery failure.<a href="#section-9-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-10">
+      <h2 id="name-security-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<div id="what-the-trust-anchor-attests">
+<section id="section-10.1">
+        <h3 id="name-what-the-trust-anchor-attes">
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-what-the-trust-anchor-attes" class="section-name selfRef">What the Trust Anchor Attests</a>
+        </h3>
+<p id="section-10.1-1">The Trust Anchor, through the Subordinate Statement, attests only that the Entity's Federation Entity Keys belong to its Entity Identifier. The Entity itself attests the digests, and therefore the covered documents, the referenced documents, and the Trust Mark statements in them. A verifier trusts the Entity's statements about its own documents exactly as far as it trusts the Entity's federation key. Only Trust Marks convey accreditation of the Entity by third parties.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dns-and-transport">
+<section id="section-10.2">
+        <h3 id="name-dns-and-transport">
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-dns-and-transport" class="section-name selfRef">DNS and Transport</a>
+        </h3>
+<p id="section-10.2-1">Once the Trust Chain is validated and the digests match, DNS and TLS serve only as transport. An attacker who can answer for the origin can withhold documents but cannot substitute them.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="federation-key-compromise">
+<section id="section-10.3">
+        <h3 id="name-federation-key-compromise">
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-federation-key-compromise" class="section-name selfRef">Federation Key Compromise</a>
+        </h3>
+<p id="section-10.3-1">An attacker who compromises an Entity's Federation Entity Key can issue an Entity Configuration with digests of attacker-chosen documents. The attacker can thereby substitute the Entity's protocol keys for as long as the key remains in the Superior's Subordinate Statement. Entities SHOULD give Federation Entity Keys at least the protection of their protocol keys, and SHOULD NOT hold them in the same place. Recovery is removal of the key from the Subordinate Statement by the Superior.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-anchor-key-rollover">
+<section id="section-10.4">
+        <h3 id="name-trust-anchor-key-rollover">
+<a href="#section-10.4" class="section-number selfRef">10.4. </a><a href="#name-trust-anchor-key-rollover" class="section-name selfRef">Trust Anchor Key Rollover</a>
+        </h3>
+<p id="section-10.4-1">A verifier's configured Trust Anchor key is its root of trust. <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 11 has the Trust Anchor publish its next key in its Entity Configuration before signing with it. A verifier that does not refresh the Trust Anchor's Entity Configuration within that overlap can no longer validate chains, and must be re-configured out of band. OpenID Federation defines no hold-down period comparable to <span>[<a href="#RFC5011" class="cite xref">RFC5011</a>]</span>. A compromised current Trust Anchor key can therefore introduce a replacement key that verifiers accept immediately.<a href="#section-10.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="published-requirements">
+<section id="section-10.5">
+        <h3 id="name-published-requirements-are-">
+<a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-published-requirements-are-" class="section-name selfRef">Published Requirements Are Not Enforcement</a>
+        </h3>
+<p id="section-10.5-1"><code>trust_mark_types_required</code> informs counterparties; it does not bind the publisher. Whether a verifier requires federation verification or Trust Marks of a peer comes from the verifier's own configuration, never from the peer's documents. Consider a verifier whose policy requires federation verification of a peer. It MUST NOT fall back to Web PKI trust because the peer's covered document omits <code>trust_mark_types</code>, or because the peer's origin serves no Entity Configuration.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="unauthenticated-content-before-verification">
+<section id="section-10.6">
+        <h3 id="name-unauthenticated-content-bef">
+<a href="#section-10.6" class="section-number selfRef">10.6. </a><a href="#name-unauthenticated-content-bef" class="section-name selfRef">Unauthenticated Content Before Verification</a>
+        </h3>
+<p id="section-10.6-1">A covered document is unauthenticated until its digest has been checked against a validated Entity Configuration. A verifier whose policy requires federation verification for a peer MUST NOT act on any member of the covered document before step 3 of <a href="#verification" class="auto internal xref">Section 7</a>. This includes URL-valued members, <code>trust_mark_types</code>, and <code>trust_mark_types_required</code>. The same applies to a referenced document before step 4.<a href="#section-10.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="unreferenced-urls">
+<section id="section-10.7">
+        <h3 id="name-unreferenced-urls">
+<a href="#section-10.7" class="section-number selfRef">10.7. </a><a href="#name-unreferenced-urls" class="section-name selfRef">Unreferenced URLs</a>
+        </h3>
+<p id="section-10.7-1"><code>referenced</code> authenticates only the documents it lists. A URL-valued member of a covered document that is not listed in <code>referenced</code> locates an unauthenticated document. The URL itself is authenticated, but the document at that URL is not. A verifier that relies on such a document SHOULD require the Entity to list it in <code>referenced</code>.<a href="#section-10.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-mark-selection">
+<section id="section-10.8">
+        <h3 id="name-trust-mark-selection">
+<a href="#section-10.8" class="section-number selfRef">10.8. </a><a href="#name-trust-mark-selection" class="section-name selfRef">Trust Mark Selection</a>
+        </h3>
+<p id="section-10.8-1"><code>trust_mark_types</code> narrows which Trust Marks count for a role; it cannot add one. A verifier MUST validate each Trust Mark it relies on per <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 7.3, including issuer authorization under the Trust Anchor's <code>trust_mark_issuers</code>. Where the Trust Mark Issuer offers a Trust Mark Status endpoint (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 8.4), the verifier MAY query it.<a href="#section-10.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="byte-exact-digests">
+<section id="section-10.9">
+        <h3 id="name-byte-exact-digests">
+<a href="#section-10.9" class="section-number selfRef">10.9. </a><a href="#name-byte-exact-digests" class="section-name selfRef">Byte-Exact Digests</a>
+        </h3>
+<p id="section-10.9-1">Digests pin exact octets. Any transformation between the Entity and the verifier produces a mismatch and a verification failure, so the check fails closed.<a href="#section-10.9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="resolution-cost">
+<section id="section-10.10">
+        <h3 id="name-resolution-cost">
+<a href="#section-10.10" class="section-number selfRef">10.10. </a><a href="#name-resolution-cost" class="section-name selfRef">Resolution Cost</a>
+        </h3>
+<p id="section-10.10-1">Trust Chain resolution adds fetches to metadata discovery. An attacker who can cause a verifier to discover many peers can use this to amplify load on the verifier and on Superiors' fetch endpoints. Verifiers SHOULD cache per <a href="#caching" class="auto internal xref">Section 7.1</a>, and SHOULD bound the rate of chain resolution per peer.<a href="#section-10.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="privacy-considerations">
+<section id="section-11">
+      <h2 id="name-privacy-considerations">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+      </h2>
+<p id="section-11-1">Resolving a peer's Trust Chain reveals to the peer's Superiors, through requests to their fetch endpoints, that the verifier is evaluating that peer. Verifiers that consider this sensitive have two options: use a resolver they operate (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10.6), or cache Subordinate Statements for their full lifetime.<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-11-2">A Trust Mark is public for as long as it is in an Entity Configuration. In <code>trust_mark_types</code>, an Entity SHOULD list only the types relevant to the role. It MAY omit from its Entity Configuration any Trust Marks it does not want to disclose.<a href="#section-11-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-12">
+      <h2 id="name-iana-considerations">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="oauth-authorization-server-metadata">
+<section id="section-12.1">
+        <h3 id="name-oauth-authorization-server-">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-oauth-authorization-server-" class="section-name selfRef">OAuth Authorization Server Metadata</a>
+        </h3>
+<p id="section-12.1-1">This specification requests registration of the following in the "OAuth Authorization Server Metadata" registry established by <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>:<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.1-2.1">
+            <p id="section-12.1-2.1.1">Metadata Name: <code>trust_mark_types</code><a href="#section-12.1-2.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.1-2.1.2.1">
+                <p id="section-12.1-2.1.2.1.1">Metadata Description: Trust Mark types the Entity presents as relevant to this role<a href="#section-12.1-2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-12.1-2.1.2.2">
+                <p id="section-12.1-2.1.2.2.1">Change Controller: OpenID Foundation Connect Working Group<a href="#section-12.1-2.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-12.1-2.1.2.3">
+                <p id="section-12.1-2.1.2.3.1">Specification Document(s): <a href="#trust-mark-types" class="auto internal xref">Section 6.1</a> of this specification<a href="#section-12.1-2.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+          <li class="normal" id="section-12.1-2.2">
+            <p id="section-12.1-2.2.1">Metadata Name: <code>trust_mark_types_required</code><a href="#section-12.1-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.1-2.2.2.1">
+                <p id="section-12.1-2.2.2.1.1">Metadata Description: Trust Mark types the Entity requires of counterparties, by counterparty well-known suffix<a href="#section-12.1-2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-12.1-2.2.2.2">
+                <p id="section-12.1-2.2.2.2.1">Change Controller: OpenID Foundation Connect Working Group<a href="#section-12.1-2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-12.1-2.2.2.3">
+                <p id="section-12.1-2.2.2.3.1">Specification Document(s): <a href="#trust-mark-types-required" class="auto internal xref">Section 6.2</a> of this specification<a href="#section-12.1-2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+</section>
+</div>
+<div id="oauth-protected-resource-metadata">
+<section id="section-12.2">
+        <h3 id="name-oauth-protected-resource-me">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-oauth-protected-resource-me" class="section-name selfRef">OAuth Protected Resource Metadata</a>
+        </h3>
+<p id="section-12.2-1">This specification requests registration of <code>trust_mark_types</code> and <code>trust_mark_types_required</code>, with the descriptions above, in the "OAuth Protected Resource Metadata" registry established by <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="oauth-extensions-error">
+<section id="section-12.3">
+        <h3 id="name-oauth-extensions-error">
+<a href="#section-12.3" class="section-number selfRef">12.3. </a><a href="#name-oauth-extensions-error" class="section-name selfRef">OAuth Extensions Error</a>
+        </h3>
+<p id="section-12.3-1">This specification requests registration of the following in the "OAuth Extensions Error Registry" established by <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>:<a href="#section-12.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.3-2.1">
+            <p id="section-12.3-2.1.1">Name: <code>trust_mark_required</code><a href="#section-12.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.3-2.2">
+            <p id="section-12.3-2.2.1">Usage Location: resource access error response, token error response<a href="#section-12.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.3-2.3">
+            <p id="section-12.3-2.3.1">Protocol Extension: OpenID Federation Well-Known Binding<a href="#section-12.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.3-2.4">
+            <p id="section-12.3-2.4.1">Change Controller: OpenID Foundation Connect Working Group<a href="#section-12.3-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.3-2.5">
+            <p id="section-12.3-2.5.1">Specification Document(s): <a href="#errors" class="auto internal xref">Section 9</a> of this specification<a href="#section-12.3-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-12.3-3"><code>digest_alg</code> values are taken from the "Hash Algorithms for HTTP Digest Fields" registry established by <span>[<a href="#RFC9530" class="cite xref">RFC9530</a>]</span>.<a href="#section-12.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="open-issues">
+<section id="section-13">
+      <h2 id="name-open-issues">
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-open-issues" class="section-name selfRef">Open Issues</a>
+      </h2>
+<p id="section-13-1"><em>Note: This section is to be removed before publication.</em><a href="#section-13-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-13-2.1">
+          <p id="section-13-2.1.1">Registration of <code>digest_alg</code> and <code>well_known_documents</code> as <code>federation_entity</code> metadata parameters, if the OpenID Federation registry structure provides for it.<a href="#section-13-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-13-2.2">
+          <p id="section-13-2.2.1">Whether verifiers should re-fetch the Entity Configuration once on a digest mismatch, as a fallback for Entities that do not sequence updates per <a href="#updates" class="auto internal xref">Section 8</a>.<a href="#section-13-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-13-2.3">
+          <p id="section-13-2.3.1">Whether <code>referenced</code> should support members nested below the top level of a covered document.<a href="#section-13-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-13-2.4">
+          <p id="section-13-2.4.1">Whether <code>uri</code> should be restricted to the Entity Identifier's origin.<a href="#section-13-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-13-2.5">
+          <p id="section-13-2.5.1">Whether to also define a digest companion for a <code>jwks_uri</code> that appears directly in Entity Type metadata, as a plain-JSON alternative to <code>signed_jwks_uri</code> outside well-known documents.<a href="#section-13-2.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="document-history">
+<section id="section-14">
+      <h2 id="name-document-history">
+<a href="#section-14" class="section-number selfRef">14. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
+      </h2>
+<p id="section-14-1"><em>Note: This section is to be removed before publication.</em><a href="#section-14-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-14-2.1">
+          <p id="section-14-2.1.1">-00<a href="#section-14-2.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-14-2.1.2.1">
+              <p id="section-14-2.1.2.1.1">Initial draft, generalized from draft-hardt-aauth-trust-marks.<a href="#section-14-2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="section-15">
+      <h2 id="name-acknowledgments">
+<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="section-15-1">TBD<a href="#section-15-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-16">
+      <h2 id="name-normative-references">
+<a href="#section-16" class="section-number selfRef">16. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
+<dl class="references">
+<dt id="RFC8414">[RFC8414]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9728">[RFC9728]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9728">https://www.rfc-editor.org/info/rfc9728</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation">[OpenID.Federation]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R., Ed.</span>, <span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, <span class="refAuthor">De Marco, G.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.0"</span>, <time datetime="2026-02-17" class="refDate">17 February 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_0.html">https://openid.net/specs/openid-federation-1_0.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8259">[RFC8259]</dt>
+      <dd>
+<span class="refAuthor">Bray, T., Ed.</span>, <span class="refTitle">"The JavaScript Object Notation (JSON) Data Interchange Format"</span>, <span class="seriesInfo">STD 90</span>, <span class="seriesInfo">RFC 8259</span>, <span class="seriesInfo">DOI 10.17487/RFC8259</span>, <time datetime="2017-12" class="refDate">December 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8259">https://www.rfc-editor.org/info/rfc8259</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9530">[RFC9530]</dt>
+      <dd>
+<span class="refAuthor">Polli, R.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Digest Fields"</span>, <span class="seriesInfo">RFC 9530</span>, <span class="seriesInfo">DOI 10.17487/RFC9530</span>, <time datetime="2024-02" class="refDate">February 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9530">https://www.rfc-editor.org/info/rfc9530</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+      <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8615">[RFC8615]</dt>
+      <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8615">https://www.rfc-editor.org/info/rfc8615</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7519">[RFC7519]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7519">https://www.rfc-editor.org/info/rfc7519</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7515">[RFC7515]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9111">[RFC9111]</dt>
+      <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Caching"</span>, <span class="seriesInfo">STD 98</span>, <span class="seriesInfo">RFC 9111</span>, <span class="seriesInfo">DOI 10.17487/RFC9111</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9111">https://www.rfc-editor.org/info/rfc9111</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6749">[RFC6749]</dt>
+    <dd>
+<span class="refAuthor">Hardt, D., Ed.</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework"</span>, <span class="seriesInfo">RFC 6749</span>, <span class="seriesInfo">DOI 10.17487/RFC6749</span>, <time datetime="2012-10" class="refDate">October 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6749">https://www.rfc-editor.org/info/rfc6749</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-17">
+      <h2 id="name-informative-references">
+<a href="#section-17" class="section-number selfRef">17. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+      </h2>
+<dl class="references">
+<dt id="RFC5011">[RFC5011]</dt>
+      <dd>
+<span class="refAuthor">StJohns, M.</span>, <span class="refTitle">"Automated Updates of DNS Security (DNSSEC) Trust Anchors"</span>, <span class="seriesInfo">STD 74</span>, <span class="seriesInfo">RFC 5011</span>, <span class="seriesInfo">DOI 10.17487/RFC5011</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5011">https://www.rfc-editor.org/info/rfc5011</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.hardt-oauth-aauth-protocol">[I-D.hardt-oauth-aauth-protocol]</dt>
+    <dd>
+<span class="refAuthor">Hardt, D.</span>, <span class="refTitle">"AAuth Protocol"</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol">https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<div id="examples">
+<section id="appendix-A">
+      <h2 id="name-examples">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+      </h2>
+<div id="aauth-person-server">
+<section id="appendix-A.1">
+        <h3 id="name-aauth-person-server">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-aauth-person-server" class="section-name selfRef">AAuth Person Server</a>
+        </h3>
+<p id="appendix-A.1-1">AAuth server identifiers have no path, so no <code>uri</code> is needed. Entity Configuration payload, served at <code>https://ps.example/.well-known/openid-federation</code>:<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.1-2">
+<pre>{
+  "iss": "https://ps.example",
+  "sub": "https://ps.example",
+  "iat": 1790236800,
+  "exp": 1790323200,
+  "jwks": {
+    "keys": [
+      {
+        "kty": "EC",
+        "crv": "P-256",
+        "kid": "fed-2026-09",
+        "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+        "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"
+      }
+    ]
+  },
+  "authority_hints": ["https://ta.example"],
+  "metadata": {
+    "federation_entity": {
+      "well_known_documents": {
+        "aauth-person.json": {
+          "digests": [
+            "2hBq7vQeY0mX1kZ5p8m4a0yP3Q2c0m3m0n7Lr1ZkQ9o"
+          ],
+          "referenced": {
+            "jwks_uri": [
+              "Kq3rU8mZ4nT1bV9xW2yA5cD7eF0gH6iJ8kL1mN3oP5q",
+              "7fYw0pQx3mN8bR2cV5kL1aZ9sD4hJ6gT0uE3iO8yW2q"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "trust_marks": [
+    {
+      "trust_mark_type":
+        "https://openfinance.example/marks/payment-institution",
+      "trust_mark": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIs..."
+    }
+  ]
+}
+</pre><a href="#appendix-A.1-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.1-3">The <code>jwks_uri</code> array holds two values because a protocol key rotation is in progress <a href="#updates" class="auto internal xref">Section 8</a>. Digest values are illustrative.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-4">The covered document at <code>https://ps.example/.well-known/aauth-person.json</code>:<a href="#appendix-A.1-4" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.1-5">
+<pre>{
+  "issuer": "https://ps.example",
+  "token_endpoint": "https://ps.example/token",
+  "jwks_uri": "https://ps.example/keys/jwks",
+  "trust_mark_types": [
+    "https://openfinance.example/marks/payment-institution"
+  ],
+  "trust_mark_types_required": {
+    "aauth-resource.json": [
+      "https://soc2.example/marks/soc2-type2"
+    ]
+  }
+}
+</pre><a href="#appendix-A.1-5" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="collocated-roles">
+<section id="appendix-A.2">
+        <h3 id="name-collocated-roles">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-collocated-roles" class="section-name selfRef">Collocated Roles</a>
+        </h3>
+<p id="appendix-A.2-1">An origin acting as both OAuth authorization server and protected resource covers one document per role. Each document makes its own Trust Mark statements.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.2-2">
+<pre>"federation_entity": {
+  "well_known_documents": {
+    "oauth-authorization-server": {
+      "digests": ["mJ3pX8kQ2vN7cR1tY5wB9zL4hD6fG0sA2eU8iO3nK7q"],
+      "referenced": {
+        "jwks_uri": ["Lw4sT9mB1xZ6kP3vQ8nR2cY7hF5jD0gA4eU1iO9tK6s"]
+      }
+    },
+    "oauth-protected-resource": {
+      "digests": ["Qe7rN2vB5kX9mT1cY4wL8zH3pD6fG0sA2jU8iO5nR1t"],
+      "referenced": {
+        "jwks_uri": ["Lw4sT9mB1xZ6kP3vQ8nR2cY7hF5jD0gA4eU1iO9tK6s"]
+      }
+    }
+  }
+}
+</pre><a href="#appendix-A.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="path-based-entity-identifier">
+<section id="appendix-A.3">
+        <h3 id="name-path-based-entity-identifie">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-path-based-entity-identifie" class="section-name selfRef">Path-Based Entity Identifier</a>
+        </h3>
+<p id="appendix-A.3-1">For Entity Identifier <code>https://idp.example/tenant-a</code>, whose authorization server metadata is located per <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1:<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.3-2">
+<pre>"well_known_documents": {
+  "oauth-authorization-server": {
+    "uri": "https://idp.example/.well-known/oauth-authorization-server/tenant-a",
+    "digests": ["Zr8kP2mQ5vX1nT7cY3wL9bH4dF6gA0sJ2eU8iO5nR3t"]
+  }
+}
+</pre><a href="#appendix-A.3-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="design-rationale">
+<section id="appendix-B">
+      <h2 id="name-design-rationale">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-design-rationale" class="section-name selfRef">Design Rationale</a>
+      </h2>
+<div id="why-federation-entity-metadata">
+<section id="appendix-B.1">
+        <h3 id="name-why-federation_entity-metad">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-why-federation_entity-metad" class="section-name selfRef">Why <code>federation_entity</code> Metadata</a>
+        </h3>
+<p id="appendix-B.1-1">Every Entity publishes <code>federation_entity</code> metadata. Placing <code>well_known_documents</code> there lets a verifier find the entry for a document by its well-known suffix alone, whatever protocol the document belongs to. No mapping from protocols to Entity Types is needed, and no per-protocol profile.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-keyed-by-well-known-suffix">
+<section id="appendix-B.2">
+        <h3 id="name-why-keyed-by-well-known-suf">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-why-keyed-by-well-known-suf" class="section-name selfRef">Why Keyed by Well-Known Suffix</a>
+        </h3>
+<p id="appendix-B.2-1">The well-known suffix is the one identifier every covered document already has. It is registered in the IANA "Well-Known URIs" registry <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>, and the verifier holds it from the discovery step it is already performing.<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-the-document-states-its-trust-marks">
+<section id="appendix-B.3">
+        <h3 id="name-why-the-document-states-its">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-why-the-document-states-its" class="section-name selfRef">Why the Document States Its Trust Marks</a>
+        </h3>
+<p id="appendix-B.3-1">The role a Trust Mark accredits is described by the protocol's own document. Putting <code>trust_mark_types</code> and <code>trust_mark_types_required</code> in that document keeps the statement with the role. When one origin serves several roles, each role therefore states its own selection and requirements. The document's digest authenticates these statements. Carrying them in the Entity Configuration instead would separate them from the role they describe.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-json-objects-and-jwts-only">
+<section id="appendix-B.4">
+        <h3 id="name-why-json-objects-and-jwts-o">
+<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-why-json-objects-and-jwts-o" class="section-name selfRef">Why JSON Objects and JWTs Only</a>
+        </h3>
+<p id="appendix-B.4-1">The statement members need a document that can carry named members. Other formats can still be covered by digest, but cannot make Trust Mark statements.<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-the-entity-signs-the-digests">
+<section id="appendix-B.5">
+        <h3 id="name-why-the-entity-signs-the-di">
+<a href="#appendix-B.5" class="section-number selfRef">B.5. </a><a href="#name-why-the-entity-signs-the-di" class="section-name selfRef">Why the Entity Signs the Digests</a>
+        </h3>
+<p id="appendix-B.5-1">The alternative is to carry digests in a Trust Mark issued by the Trust Anchor or an accreditation body. That would make every key rotation and metadata change a request to a third party. Accreditation changes rarely; keys and metadata change routinely. Putting the digests in the Entity's own Entity Configuration keeps routine changes self-service, while the Trust Anchor still controls which federation keys speak for the Entity. Trust Marks carry accreditation only.<a href="#appendix-B.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-not-sign-the-documents">
+<section id="appendix-B.6">
+        <h3 id="name-why-not-sign-the-documents">
+<a href="#appendix-B.6" class="section-number selfRef">B.6. </a><a href="#name-why-not-sign-the-documents" class="section-name selfRef">Why Not Sign the Documents</a>
+        </h3>
+<p id="appendix-B.6-1">OpenID Federation offers <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1), <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> offer <code>signed_metadata</code>, and any document could carry a detached JWS (<span>[<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>, Appendix F). Each of these has two costs. Servers must produce and serve signed variants of documents they serve today as plain JSON. Verifiers must handle two formats, each rooted in a different key. With digests, an Entity joins a federation by publishing an Entity Configuration, and nothing it already serves changes except the optional Trust Mark members.<a href="#appendix-B.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-the-binding-stands-apart-from-trust-marks">
+<section id="appendix-B.7">
+        <h3 id="name-why-the-binding-stands-apar">
+<a href="#appendix-B.7" class="section-number selfRef">B.7. </a><a href="#name-why-the-binding-stands-apar" class="section-name selfRef">Why the Binding Stands Apart from Trust Marks</a>
+        </h3>
+<p id="appendix-B.7-1">Binding keys to an Entity Identifier and accrediting the Entity are separate questions, answered by different parties on different schedules. The Trust Chain answers the first; Trust Marks answer the second. A deployment that wants federation-rooted protocol keys and has no accreditation scheme uses <a href="#well-known-documents" class="auto internal xref">Section 5</a> alone. The Trust Mark members are defined here because their authentication depends on the binding, not because the binding depends on them.<a href="#appendix-B.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-uri-only-for-path-based-identifiers">
+<section id="appendix-B.8">
+        <h3 id="name-why-uri-only-for-path-based">
+<a href="#appendix-B.8" class="section-number selfRef">B.8. </a><a href="#name-why-uri-only-for-path-based" class="section-name selfRef">Why <code>uri</code> Only for Path-Based Identifiers</a>
+        </h3>
+<p id="appendix-B.8-1">For an Entity Identifier with no path, the location follows from the identifier and the suffix. A <code>uri</code> member would then be a second source for the same value, and the two could disagree. Protocols differ in how they place well-known paths for path-based identifiers. Stating the location explicitly in those cases avoids encoding each protocol's rule.<a href="#appendix-B.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-arrays-of-digests">
+<section id="appendix-B.9">
+        <h3 id="name-why-arrays-of-digests">
+<a href="#appendix-B.9" class="section-number selfRef">B.9. </a><a href="#name-why-arrays-of-digests" class="section-name selfRef">Why Arrays of Digests</a>
+        </h3>
+<p id="appendix-B.9-1">A digest pins one version of a document, and verifiers cache Entity Configurations for their lifetime. Listing old and new digests together lets the Entity pre-publish the new digest, as OpenID Federation pre-publishes a Trust Anchor's next key. The alternative is to require verifiers to re-fetch on mismatch. That shifts the cost to every verifier and creates a forced-fetch vector, so it is recorded as an open issue.<a href="#appendix-B.9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-digest-alg-and-base64url">
+<section id="appendix-B.10">
+        <h3 id="name-why-digest_alg-and-base64ur">
+<a href="#appendix-B.10" class="section-number selfRef">B.10. </a><a href="#name-why-digest_alg-and-base64ur" class="section-name selfRef">Why <code>digest_alg</code> and base64url</a>
+        </h3>
+<p id="appendix-B.10-1">The SD-JWT VC <code>#integrity</code> convention uses W3C Subresource Integrity expressions. These are standard base64 with padding, and repeat the algorithm in every value. A single <code>digest_alg</code> with base64url values matches other digests in JOSE documents (<code>x5t#S256</code>, <code>jkt</code>), and takes algorithm names from the <span>[<a href="#RFC9530" class="cite xref">RFC9530</a>]</span> registry. The cost is that an algorithm change is a single cutover rather than an overlap.<a href="#appendix-B.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-requirements-are-keyed-by-well-known-suffix">
+<section id="appendix-B.11">
+        <h3 id="name-why-requirements-are-keyed-">
+<a href="#appendix-B.11" class="section-number selfRef">B.11. </a><a href="#name-why-requirements-are-keyed-" class="section-name selfRef">Why Requirements Are Keyed by Well-Known Suffix</a>
+        </h3>
+<p id="appendix-B.11-1">A server often deals with counterparties in several roles, and may require different accreditation of each. The counterparty's well-known suffix names its role in a way that needs no additional identifier. It is also the document in which the counterparty lists its own <code>trust_mark_types</code>.<a href="#appendix-B.11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-trust-mark-issuance-is-out-of-scope">
+<section id="appendix-B.12">
+        <h3 id="name-why-trust-mark-issuance-is-">
+<a href="#appendix-B.12" class="section-number selfRef">B.12. </a><a href="#name-why-trust-mark-issuance-is-" class="section-name selfRef">Why Trust Mark Issuance Is Out of Scope</a>
+        </h3>
+<p id="appendix-B.12-1">Who accredits whom is a property of each federation and accreditation scheme. OpenID Federation already expresses which issuers are recognized for which types (<code>trust_mark_issuers</code>, <code>trust_mark_owners</code>). This specification consumes Trust Marks and defines nothing about producing them.<a href="#appendix-B.12-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Dick Hardt</span></div>
+<div dir="auto" class="left"><span class="org">Hellō</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:dick.hardt@gmail.com" class="email">dick.hardt@gmail.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
