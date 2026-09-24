@@ -22,14 +22,17 @@ organization = "Hellō"
 
 %%%
 
-<reference anchor="OpenID.Federation" target="https://openid.net/specs/openid-federation-1_0.html">
+<reference anchor="OpenID.Federation" target="https://openid.net/specs/openid-federation-1_1.html">
   <front>
-    <title>OpenID Federation 1.0</title>
-    <author initials="R." surname="Hedberg" fullname="Roland Hedberg" role="editor">
+    <title>OpenID Federation 1.1</title>
+    <author initials="R." surname="Hedberg" fullname="Roland Hedberg">
       <organization>independent</organization>
     </author>
-    <author initials="M.B." surname="Jones" fullname="Michael B. Jones">
+    <author initials="M.B." surname="Jones" fullname="Michael B. Jones" role="editor">
       <organization>Self-Issued Consulting</organization>
+    </author>
+    <author initials="G." surname="De Marco" fullname="Giuseppe De Marco">
+      <organization>independent</organization>
     </author>
     <author initials="A.Å." surname="Solberg" fullname="Andreas Åkre Solberg">
       <organization>Sikt</organization>
@@ -37,13 +40,35 @@ organization = "Hellō"
     <author initials="J." surname="Bradley" fullname="John Bradley">
       <organization>Yubico</organization>
     </author>
+    <author initials="V." surname="Dzhuvinov" fullname="Vladimir Dzhuvinov">
+      <organization>Connect2id</organization>
+    </author>
+    <date day="5" month="May" year="2026"/>
+  </front>
+</reference>
+
+<reference anchor="OpenID.Federation.Connect" target="https://openid.net/specs/openid-federation-connect-1_1.html">
+  <front>
+    <title>OpenID Federation for OpenID Connect 1.1</title>
+    <author initials="R." surname="Hedberg" fullname="Roland Hedberg">
+      <organization>independent</organization>
+    </author>
+    <author initials="M.B." surname="Jones" fullname="Michael B. Jones" role="editor">
+      <organization>Self-Issued Consulting</organization>
+    </author>
     <author initials="G." surname="De Marco" fullname="Giuseppe De Marco">
       <organization>independent</organization>
+    </author>
+    <author initials="A.Å." surname="Solberg" fullname="Andreas Åkre Solberg">
+      <organization>Sikt</organization>
+    </author>
+    <author initials="J." surname="Bradley" fullname="John Bradley">
+      <organization>Yubico</organization>
     </author>
     <author initials="V." surname="Dzhuvinov" fullname="Vladimir Dzhuvinov">
       <organization>Connect2id</organization>
     </author>
-    <date day="17" month="February" year="2026"/>
+    <date day="5" month="May" year="2026"/>
   </front>
 </reference>
 
@@ -59,7 +84,7 @@ organization = "Hellō"
 
 .# Abstract
 
-This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to `signed_jwks_uri` that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile.
+This specification binds an OpenID Federation 1.1 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to `signed_jwks_uri` that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile.
 
 Optionally, a well-known document that is a JSON object can also state which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of its counterparties.
 
@@ -71,11 +96,11 @@ Optionally, a well-known document that is a JSON object can also state which of 
 
 # Introduction
 
-Many protocols have a server publish metadata at a well-known URI [@!RFC8615]. Examples are OAuth 2.0 Authorization Server Metadata [@!RFC8414], OAuth 2.0 Protected Resource Metadata [@!RFC9728], and the AAuth Protocol [@?I-D.hardt-oauth-aauth-protocol]. The metadata's `jwks_uri` member locates the JSON Web Key Set (JWK Set) that holds the server's protocol keys, such as the keys it signs tokens with. Both documents are fetched over HTTPS, so the binding between the server's identifier and its protocol keys rests on DNS and the Web PKI: whoever can answer for the origin can publish keys for it.
+Many protocols have a server publish metadata at a well-known URI [@!RFC8615]. Examples are OAuth 2.0 Authorization Server Metadata [@!RFC8414], OAuth 2.0 Protected Resource Metadata [@!RFC9728], and the AAuth Protocol [@?I-D.hardt-oauth-aauth-protocol]. The metadata's `jwks_uri` member locates the JSON Web Key Set (JWK Set) that holds the server's protocol keys, such as the keys it signs tokens with. Some protocols publish the JWK Set itself at a well-known URI, such as the HTTP Message Signatures Directory of Web Bot Auth [@?I-D.ietf-webbotauth-httpsig-protocol]. Both documents are fetched over HTTPS, so the binding between the server's identifier and its protocol keys rests on DNS and the Web PKI: whoever can answer for the origin can publish keys for it.
 
 That is sufficient for many deployments. It is not sufficient where the Web PKI is not an acceptable root of trust for protocol keys, or where a party needs to know more than "this origin published these keys", for example that the origin belongs to an accredited payment institution.
 
-OpenID Federation 1.0 [@!OpenID.Federation] binds an Entity's Federation Entity Keys to its Entity Identifier through a Trust Chain, independently of the Web PKI. It expresses accreditation of an Entity by a third party as Trust Marks. For OpenID Connect, it defines a different binding for metadata: OpenID Provider and Relying Party metadata is carried in Entity Statements, and metadata policies cascade down the Trust Chain to produce the metadata a verifier uses ([@!OpenID.Federation], Section 6.1). It binds a JWK Set inline as `jwks`, or as a signed JWT at `signed_jwks_uri` ([@!OpenID.Federation], Section 5.2.1). It does not authenticate documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.
+OpenID Federation 1.1 [@!OpenID.Federation] binds an Entity's Federation Entity Keys to its Entity Identifier through a Trust Chain, independently of the Web PKI. It expresses accreditation of an Entity by a third party as Trust Marks. It binds a JWK Set inline as `jwks`, or as a signed JWT at `signed_jwks_uri` ([@!OpenID.Federation], Section 5.2.1). For OpenID Connect, OpenID Federation for OpenID Connect 1.1 [@?OpenID.Federation.Connect] defines a different binding for metadata: OpenID Provider and Relying Party metadata is carried in Entity Statements, and metadata policies cascade down the Trust Chain to produce the metadata a verifier uses ([@!OpenID.Federation], Section 6.1). Neither authenticates documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.
 
 This specification provides that binding. An Entity lists, in a `well_known_bindings` claim in its Entity Configuration, digests of its well-known documents and of the JWK Sets they reference by `jwks_uri`. The Entity signs these digests with its Federation Entity Key, which the Trust Chain binds to its Entity Identifier. A verifier that validates the Trust Chain and checks the digests has authenticated the Entity's protocol metadata and protocol keys. It relies on DNS and the Web PKI only for transport and as a redundant check.
 
@@ -101,7 +126,7 @@ This specification also uses:
 - **Superior**: An Entity above another Entity in a federation, such as an Intermediate Entity or a Trust Anchor ([@!OpenID.Federation], Section 1.2). The Superior directly above an Entity issues the Subordinate Statement about it.
 - **Well-known suffix**: The URI suffix of a well-known URI ([@!RFC8615], Section 3.1), that is, the path segment following `/.well-known/`, such as `oauth-authorization-server`.
 - **Covered document**: A document served at a well-known URI whose digest an Entity lists under this specification. A covered document can be in any format.
-- **Protocol keys**: The keys in the JWK Set at a covered document's `jwks_uri`, which the Entity uses in the protocol the document belongs to. They are distinct from the Entity's Federation Entity Keys, which sign its Entity Configuration.
+- **Protocol keys**: The keys in the JWK Set at a covered document's `jwks_uri`, or in a covered document that is itself a JWK Set, which the Entity uses in the protocol the document belongs to. They are distinct from the Entity's Federation Entity Keys, which sign its Entity Configuration.
 - **Digest**: A hash of a document's exact octets, computed and encoded as defined in (#digest-computation).
 - **Verifier**: A party that fetches an Entity's covered documents and checks them as defined in (#verification).
 
@@ -161,7 +186,7 @@ Other specifications MAY define additional members of a `well_known_bindings` me
 
 The Entity SHOULD NOT list `well_known_bindings` in the `crit` claim ([@!OpenID.Federation], Section 3.1.1), so that verifiers that do not implement this specification can still use its Entity Configuration.
 
-The Entity Configuration still declares the Entity's Entity Types in its `metadata` claim, and every Entity has at least one ([@!OpenID.Federation], Sections 1.2 and 3.1.1). An Entity whose protocol has no Entity Type, such as an AAuth server, can declare `federation_entity` ([@!OpenID.Federation], Section 5.1.1).
+The Entity Configuration still declares the Entity's Entity Types in its `metadata` claim, and every Entity has at least one ([@!OpenID.Federation], Sections 1.2 and 3.1.1). An Entity whose protocol has no Entity Type, such as an AAuth server or a Web Bot Auth agent, can declare `federation_entity` ([@!OpenID.Federation], Section 5.1.1).
 
 Example, for the authorization server in (#example-as):
 
@@ -412,7 +437,7 @@ Entity Configuration of an authorization server, served at `https://as.bank.exam
 }
 ```
 
-The `oauth_authorization_server` member declares the Entity Type. It is empty because the authorization server's metadata is in its covered document, at `https://as.bank.example/.well-known/oauth-authorization-server`:
+The `oauth_authorization_server` member declares the Entity Type ([@?OpenID.Federation.Connect], Section 5.1.3). It is empty because the authorization server's metadata is in its covered document, at `https://as.bank.example/.well-known/oauth-authorization-server`:
 
 ```json
 {
@@ -480,6 +505,38 @@ The covered document at `https://ps.example/.well-known/aauth-person.json`:
   "auth_token_endpoint": "https://ps.example/token",
   "person_token_endpoint": "https://ps.example/person",
   "jwks_uri": "https://ps.example/.well-known/jwks.json"
+}
+```
+
+## Web Bot Auth Key Directory {#example-web-bot-auth}
+
+A Web Bot Auth agent publishes its keys at `https://agent.example/.well-known/http-message-signatures-directory` ([@?I-D.ietf-webbotauth-httpsig-protocol], Section 8.1). That covered document is itself a JWK Set, so it has no `jwks_uri`, and its entry has only `digests`. The keys in it are the agent's protocol keys. Web Bot Auth defines no Entity Type, so the Entity Configuration declares `federation_entity` (#well-known-bindings). Excerpt of the Entity Configuration, served at `https://agent.example/.well-known/openid-federation`:
+
+```json
+"metadata": {
+  "federation_entity": {}
+},
+"well_known_bindings": {
+  "http-message-signatures-directory": {
+    "digests": [
+      "QFsRg42H_jf5dbtcwBPOphZDx3fuDt8LsQ6gumTzOoQ"
+    ]
+  }
+}
+```
+
+The covered document:
+
+```json
+{
+  "keys": [
+    {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "kid": "NFcWBst6DXG-N35nHdzMrioWntdzNZghQSkjHNMMSjw",
+      "x": "JrQLj5P_89iXES9-vFgrIy29clF9CC_oPPsw3c5D0bs"
+    }
+  ]
 }
 ```
 

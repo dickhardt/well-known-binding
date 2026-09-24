@@ -4,7 +4,7 @@ This repository contains the OpenID Federation Well-Known Binding 1.0 draft spec
 
 ## Overview
 
-This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change.
+This specification binds an OpenID Federation 1.1 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change.
 
 ## Status
 
