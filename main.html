@@ -7,7 +7,7 @@
 <title>OpenID Federation Well-Known Binding 1.0</title>
 <meta content="Dick Hardt" name="author">
 <meta content="
-       This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to  signed_jwks_uri  that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile. 
+       This specification binds an OpenID Federation 1.1 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to  signed_jwks_uri  that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile. 
        Optionally, a well-known document that is a JSON object can also state which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of its counterparties. 
     " name="description">
 <meta content="xml2rfc 3.34.1" name="generator">
@@ -1258,7 +1258,7 @@ li > p:last-of-type:only-child {
 <h1 id="title">OpenID Federation Well-Known Binding 1.0</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This specification binds an OpenID Federation 1.0 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to <code>signed_jwks_uri</code> that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This specification binds an OpenID Federation 1.1 Entity to the documents it publishes at well-known URIs, and to the JSON Web Key Sets those documents reference. The Entity signs digests of these documents in its own Entity Configuration. A verifier that validates the Entity's Trust Chain can then authenticate them, including the protocol keys in the JSON Web Key Sets, without relying only on DNS or the Web PKI. The documents are served unchanged, and only the Entity re-signs when they change. For a JWK Set, this is an alternative to <code>signed_jwks_uri</code> that leaves the JWK Set as plain JSON. The mechanism applies to any well-known URI, with no per-protocol profile.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">Optionally, a well-known document that is a JSON object can also state which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of its counterparties.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note" id="section-note.1">
@@ -1403,10 +1403,13 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.17.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-aauth-person-server" class="internal xref">AAuth Person Server</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.4">
-                <p id="section-toc.1-1.17.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-collocated-roles" class="internal xref">Collocated Roles</a></p>
+                <p id="section-toc.1-1.17.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-web-bot-auth-key-directory" class="internal xref">Web Bot Auth Key Directory</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.5">
-                <p id="section-toc.1-1.17.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-identifier-with-a-path" class="internal xref">Identifier with a Path</a></p>
+                <p id="section-toc.1-1.17.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-collocated-roles" class="internal xref">Collocated Roles</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.6">
+                <p id="section-toc.1-1.17.2.6.1"><a href="#appendix-A.6" class="auto internal xref">A.6</a>.  <a href="#name-identifier-with-a-path" class="internal xref">Identifier with a Path</a></p>
 </li>
             </ul>
 </li>
@@ -1460,9 +1463,9 @@ li > p:last-of-type:only-child {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Many protocols have a server publish metadata at a well-known URI <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>. Examples are OAuth 2.0 Authorization Server Metadata <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, and the AAuth Protocol <span>[<a href="#I-D.hardt-oauth-aauth-protocol" class="cite xref">I-D.hardt-oauth-aauth-protocol</a>]</span>. The metadata's <code>jwks_uri</code> member locates the JSON Web Key Set (JWK Set) that holds the server's protocol keys, such as the keys it signs tokens with. Both documents are fetched over HTTPS, so the binding between the server's identifier and its protocol keys rests on DNS and the Web PKI: whoever can answer for the origin can publish keys for it.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Many protocols have a server publish metadata at a well-known URI <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>. Examples are OAuth 2.0 Authorization Server Metadata <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, and the AAuth Protocol <span>[<a href="#I-D.hardt-oauth-aauth-protocol" class="cite xref">I-D.hardt-oauth-aauth-protocol</a>]</span>. The metadata's <code>jwks_uri</code> member locates the JSON Web Key Set (JWK Set) that holds the server's protocol keys, such as the keys it signs tokens with. Some protocols publish the JWK Set itself at a well-known URI, such as the HTTP Message Signatures Directory of Web Bot Auth <span>[<a href="#I-D.ietf-webbotauth-httpsig-protocol" class="cite xref">I-D.ietf-webbotauth-httpsig-protocol</a>]</span>. Both documents are fetched over HTTPS, so the binding between the server's identifier and its protocol keys rests on DNS and the Web PKI: whoever can answer for the origin can publish keys for it.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">That is sufficient for many deployments. It is not sufficient where the Web PKI is not an acceptable root of trust for protocol keys, or where a party needs to know more than "this origin published these keys", for example that the origin belongs to an accredited payment institution.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">OpenID Federation 1.0 <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> binds an Entity's Federation Entity Keys to its Entity Identifier through a Trust Chain, independently of the Web PKI. It expresses accreditation of an Entity by a third party as Trust Marks. For OpenID Connect, it defines a different binding for metadata: OpenID Provider and Relying Party metadata is carried in Entity Statements, and metadata policies cascade down the Trust Chain to produce the metadata a verifier uses (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). It binds a JWK Set inline as <code>jwks</code>, or as a signed JWT at <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1). It does not authenticate documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">OpenID Federation 1.1 <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> binds an Entity's Federation Entity Keys to its Entity Identifier through a Trust Chain, independently of the Web PKI. It expresses accreditation of an Entity by a third party as Trust Marks. It binds a JWK Set inline as <code>jwks</code>, or as a signed JWT at <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1). For OpenID Connect, OpenID Federation for OpenID Connect 1.1 <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span> defines a different binding for metadata: OpenID Provider and Relying Party metadata is carried in Entity Statements, and metadata policies cascade down the Trust Chain to produce the metadata a verifier uses (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). Neither authenticates documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This specification provides that binding. An Entity lists, in a <code>well_known_bindings</code> claim in its Entity Configuration, digests of its well-known documents and of the JWK Sets they reference by <code>jwks_uri</code>. The Entity signs these digests with its Federation Entity Key, which the Trust Chain binds to its Entity Identifier. A verifier that validates the Trust Chain and checks the digests has authenticated the Entity's protocol metadata and protocol keys. It relies on DNS and the Web PKI only for transport and as a redundant check.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">The binding needs no Trust Marks. As an optional addition, this specification defines two members with which a well-known document that is a JSON object states which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of the Entities it deals with <a href="#trust-marks-in-documents" class="auto internal xref">Section 8</a>. The document's digest authenticates these statements.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <div id="non-goals">
@@ -1514,7 +1517,7 @@ li > p:last-of-type:only-child {
           <p id="section-3-3.3.1"><strong>Covered document</strong>: A document served at a well-known URI whose digest an Entity lists under this specification. A covered document can be in any format.<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-3.4">
-          <p id="section-3-3.4.1"><strong>Protocol keys</strong>: The keys in the JWK Set at a covered document's <code>jwks_uri</code>, which the Entity uses in the protocol the document belongs to. They are distinct from the Entity's Federation Entity Keys, which sign its Entity Configuration.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+          <p id="section-3-3.4.1"><strong>Protocol keys</strong>: The keys in the JWK Set at a covered document's <code>jwks_uri</code>, or in a covered document that is itself a JWK Set, which the Entity uses in the protocol the document belongs to. They are distinct from the Entity's Federation Entity Keys, which sign its Entity Configuration.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-3.5">
           <p id="section-3-3.5.1"><strong>Digest</strong>: A hash of a document's exact octets, computed and encoded as defined in <a href="#digest-computation" class="auto internal xref">Section 5.1</a>.<a href="#section-3-3.5.1" class="pilcrow">¶</a></p>
@@ -1623,7 +1626,7 @@ li > p:last-of-type:only-child {
 <p id="section-5-4">A covered document or JWK Set matches if its digest equals any element of its array, <code>digests</code> or <code>jwks_digests</code>. An array has more than one element only while that covered document or JWK Set is being replaced <a href="#updates" class="auto internal xref">Section 7</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
 <p id="section-5-5">Other specifications MAY define additional members of a <code>well_known_bindings</code> member value, for example digests of the image at a covered document's <code>logo_uri</code>. A verifier ignores members it does not understand.<a href="#section-5-5" class="pilcrow">¶</a></p>
 <p id="section-5-6">The Entity SHOULD NOT list <code>well_known_bindings</code> in the <code>crit</code> claim (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 3.1.1), so that verifiers that do not implement this specification can still use its Entity Configuration.<a href="#section-5-6" class="pilcrow">¶</a></p>
-<p id="section-5-7">The Entity Configuration still declares the Entity's Entity Types in its <code>metadata</code> claim, and every Entity has at least one (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Sections 1.2 and 3.1.1). An Entity whose protocol has no Entity Type, such as an AAuth server, can declare <code>federation_entity</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.1.1).<a href="#section-5-7" class="pilcrow">¶</a></p>
+<p id="section-5-7">The Entity Configuration still declares the Entity's Entity Types in its <code>metadata</code> claim, and every Entity has at least one (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Sections 1.2 and 3.1.1). An Entity whose protocol has no Entity Type, such as an AAuth server or a Web Bot Auth agent, can declare <code>federation_entity</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.1.1).<a href="#section-5-7" class="pilcrow">¶</a></p>
 <p id="section-5-8">Example, for the authorization server in <a href="#example-as" class="auto internal xref">Appendix A.1</a>:<a href="#section-5-8" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="section-5-9">
 <pre>"well_known_bindings": {
@@ -1685,7 +1688,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-identifiers-with-a-path">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-identifiers-with-a-path" class="section-name selfRef">Identifiers with a Path</a>
         </h3>
-<p id="section-6.1-1"><span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> allow an identifier with a path component. The Entity Identifier is the same string, path included, so the Entity Configuration is at the identifier with <code>/.well-known/openid-federation</code> appended (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9). The protocol can place its own document differently: <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1 and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.1 insert the well-known path between the host and the path. The verifier fetches each document where its own specification places it <a href="#example-path" class="auto internal xref">Appendix A.5</a>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1"><span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> allow an identifier with a path component. The Entity Identifier is the same string, path included, so the Entity Configuration is at the identifier with <code>/.well-known/openid-federation</code> appended (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9). The protocol can place its own document differently: <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1 and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.1 insert the well-known path between the host and the path. The verifier fetches each document where its own specification places it <a href="#example-path" class="auto internal xref">Appendix A.6</a>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="caching">
@@ -1992,45 +1995,45 @@ li > p:last-of-type:only-child {
 <a href="#section-15" class="section-number selfRef">15. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
-<dt id="RFC8615">[RFC8615]</dt>
-      <dd>
-<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8615">https://www.rfc-editor.org/info/rfc8615</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8414">[RFC8414]</dt>
-      <dd>
-<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9728">[RFC9728]</dt>
-      <dd>
-<span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9728">https://www.rfc-editor.org/info/rfc9728</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC9530">[RFC9530]</dt>
       <dd>
 <span class="refAuthor">Polli, R.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Digest Fields"</span>, <span class="seriesInfo">RFC 9530</span>, <span class="seriesInfo">DOI 10.17487/RFC9530</span>, <time datetime="2024-02" class="refDate">February 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9530">https://www.rfc-editor.org/info/rfc9530</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9110">[RFC9110]</dt>
-      <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC7515">[RFC7515]</dt>
-      <dd>
-<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9111">[RFC9111]</dt>
-      <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Caching"</span>, <span class="seriesInfo">STD 98</span>, <span class="seriesInfo">RFC 9111</span>, <span class="seriesInfo">DOI 10.17487/RFC9111</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9111">https://www.rfc-editor.org/info/rfc9111</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6749">[RFC6749]</dt>
       <dd>
 <span class="refAuthor">Hardt, D., Ed.</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework"</span>, <span class="seriesInfo">RFC 6749</span>, <span class="seriesInfo">DOI 10.17487/RFC6749</span>, <time datetime="2012-10" class="refDate">October 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6749">https://www.rfc-editor.org/info/rfc6749</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC8414">[RFC8414]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8615">[RFC8615]</dt>
+      <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8615">https://www.rfc-editor.org/info/rfc8615</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7515">[RFC7515]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+      <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9111">[RFC9111]</dt>
+      <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Caching"</span>, <span class="seriesInfo">STD 98</span>, <span class="seriesInfo">RFC 9111</span>, <span class="seriesInfo">DOI 10.17487/RFC9111</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9111">https://www.rfc-editor.org/info/rfc9111</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="OpenID.Federation">[OpenID.Federation]</dt>
       <dd>
-<span class="refAuthor">Hedberg, R., Ed.</span>, <span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, <span class="refAuthor">De Marco, G.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.0"</span>, <time datetime="2026-02-17" class="refDate">17 February 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_0.html">https://openid.net/specs/openid-federation-1_0.html</a>&gt;</span>. </dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_1.html">https://openid.net/specs/openid-federation-1_1.html</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7519">[RFC7519]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7519">https://www.rfc-editor.org/info/rfc7519</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9728">[RFC9728]</dt>
+    <dd>
+<span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9728">https://www.rfc-editor.org/info/rfc9728</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -2039,13 +2042,21 @@ li > p:last-of-type:only-child {
 <a href="#section-16" class="section-number selfRef">16. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
       </h2>
 <dl class="references">
+<dt id="RFC5011">[RFC5011]</dt>
+      <dd>
+<span class="refAuthor">StJohns, M.</span>, <span class="refTitle">"Automated Updates of DNS Security (DNSSEC) Trust Anchors"</span>, <span class="seriesInfo">STD 74</span>, <span class="seriesInfo">RFC 5011</span>, <span class="seriesInfo">DOI 10.17487/RFC5011</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5011">https://www.rfc-editor.org/info/rfc5011</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.hardt-oauth-aauth-protocol">[I-D.hardt-oauth-aauth-protocol]</dt>
       <dd>
 <span class="refAuthor">Hardt, D.</span>, <span class="refTitle">"AAuth Protocol"</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol">https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC5011">[RFC5011]</dt>
+<dt id="I-D.ietf-webbotauth-httpsig-protocol">[I-D.ietf-webbotauth-httpsig-protocol]</dt>
+      <dd>
+<span class="refAuthor">Meunier, T.</span> and <span class="refAuthor">S. Major</span>, <span class="refTitle">"HTTP Message Signatures for automated traffic"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webbotauth-httpsig-protocol-00</span>, <time datetime="2026-09-01" class="refDate">1 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00">https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation.Connect">[OpenID.Federation.Connect]</dt>
     <dd>
-<span class="refAuthor">StJohns, M.</span>, <span class="refTitle">"Automated Updates of DNS Security (DNSSEC) Trust Anchors"</span>, <span class="seriesInfo">STD 74</span>, <span class="seriesInfo">RFC 5011</span>, <span class="seriesInfo">DOI 10.17487/RFC5011</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5011">https://www.rfc-editor.org/info/rfc5011</a>&gt;</span>. </dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation for OpenID Connect 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-connect-1_1.html">https://openid.net/specs/openid-federation-connect-1_1.html</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -2102,7 +2113,7 @@ li > p:last-of-type:only-child {
 }
 </pre><a href="#appendix-A.1-2" class="pilcrow">¶</a>
 </div>
-<p id="appendix-A.1-3">The <code>oauth_authorization_server</code> member declares the Entity Type. It is empty because the authorization server's metadata is in its covered document, at <code>https://as.bank.example/.well-known/oauth-authorization-server</code>:<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-3">The <code>oauth_authorization_server</code> member declares the Entity Type (<span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span>, Section 5.1.3). It is empty because the authorization server's metadata is in its covered document, at <code>https://as.bank.example/.well-known/oauth-authorization-server</code>:<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="appendix-A.1-4">
 <pre>{
   "issuer": "https://as.bank.example",
@@ -2181,13 +2192,48 @@ li > p:last-of-type:only-child {
 </div>
 </section>
 </div>
-<div id="example-collocated">
+<div id="example-web-bot-auth">
 <section id="appendix-A.4">
-        <h3 id="name-collocated-roles">
-<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-collocated-roles" class="section-name selfRef">Collocated Roles</a>
+        <h3 id="name-web-bot-auth-key-directory">
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-web-bot-auth-key-directory" class="section-name selfRef">Web Bot Auth Key Directory</a>
         </h3>
-<p id="appendix-A.4-1">An origin that is both an OAuth authorization server and a protected resource lists one covered document per role. Each document makes its own Trust Mark statements. Both reference the same JWK Set, so their <code>jwks_digests</code> are equal.<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.4-1">A Web Bot Auth agent publishes its keys at <code>https://agent.example/.well-known/http-message-signatures-directory</code> (<span>[<a href="#I-D.ietf-webbotauth-httpsig-protocol" class="cite xref">I-D.ietf-webbotauth-httpsig-protocol</a>]</span>, Section 8.1). That covered document is itself a JWK Set, so it has no <code>jwks_uri</code>, and its entry has only <code>digests</code>. The keys in it are the agent's protocol keys. Web Bot Auth defines no Entity Type, so the Entity Configuration declares <code>federation_entity</code> <a href="#well-known-bindings" class="auto internal xref">Section 5</a>. Excerpt of the Entity Configuration, served at <code>https://agent.example/.well-known/openid-federation</code>:<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="appendix-A.4-2">
+<pre>"metadata": {
+  "federation_entity": {}
+},
+"well_known_bindings": {
+  "http-message-signatures-directory": {
+    "digests": [
+      "QFsRg42H_jf5dbtcwBPOphZDx3fuDt8LsQ6gumTzOoQ"
+    ]
+  }
+}
+</pre><a href="#appendix-A.4-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.4-3">The covered document:<a href="#appendix-A.4-3" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.4-4">
+<pre>{
+  "keys": [
+    {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "kid": "NFcWBst6DXG-N35nHdzMrioWntdzNZghQSkjHNMMSjw",
+      "x": "JrQLj5P_89iXES9-vFgrIy29clF9CC_oPPsw3c5D0bs"
+    }
+  ]
+}
+</pre><a href="#appendix-A.4-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="example-collocated">
+<section id="appendix-A.5">
+        <h3 id="name-collocated-roles">
+<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-collocated-roles" class="section-name selfRef">Collocated Roles</a>
+        </h3>
+<p id="appendix-A.5-1">An origin that is both an OAuth authorization server and a protected resource lists one covered document per role. Each document makes its own Trust Mark statements. Both reference the same JWK Set, so their <code>jwks_digests</code> are equal.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.5-2">
 <pre>"well_known_bindings": {
   "oauth-authorization-server": {
     "digests": [
@@ -2206,25 +2252,25 @@ li > p:last-of-type:only-child {
     ]
   }
 }
-</pre><a href="#appendix-A.4-2" class="pilcrow">¶</a>
+</pre><a href="#appendix-A.5-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="example-path">
-<section id="appendix-A.5">
+<section id="appendix-A.6">
         <h3 id="name-identifier-with-a-path">
-<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-identifier-with-a-path" class="section-name selfRef">Identifier with a Path</a>
+<a href="#appendix-A.6" class="section-number selfRef">A.6. </a><a href="#name-identifier-with-a-path" class="section-name selfRef">Identifier with a Path</a>
         </h3>
-<p id="appendix-A.5-1">An authorization server has issuer <code>https://idp.example/tenant-a</code>, and its Entity Identifier is the same string. A verifier fetches:<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.6-1">An authorization server has issuer <code>https://idp.example/tenant-a</code>, and its Entity Identifier is the same string. A verifier fetches:<a href="#appendix-A.6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-A.5-2.1">
-            <p id="appendix-A.5-2.1.1">the covered document at <code>https://idp.example/.well-known/oauth-authorization-server/tenant-a</code> (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1), and<a href="#appendix-A.5-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.6-2.1">
+            <p id="appendix-A.6-2.1.1">the covered document at <code>https://idp.example/.well-known/oauth-authorization-server/tenant-a</code> (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1), and<a href="#appendix-A.6-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-A.5-2.2">
-            <p id="appendix-A.5-2.2.1">the Entity Configuration at <code>https://idp.example/tenant-a/.well-known/openid-federation</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9).<a href="#appendix-A.5-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-2.2">
+            <p id="appendix-A.6-2.2.1">the Entity Configuration at <code>https://idp.example/tenant-a/.well-known/openid-federation</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9).<a href="#appendix-A.6-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="appendix-A.5-3">The <code>well_known_bindings</code> member for <code>oauth-authorization-server</code> has the same form as for an identifier with no path.<a href="#appendix-A.5-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.6-3">The <code>well_known_bindings</code> member for <code>oauth-authorization-server</code> has the same form as for an identifier with no path.<a href="#appendix-A.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
