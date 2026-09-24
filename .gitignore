@@ -1,0 +1,7 @@
+# MacOS
+.DS_store
+
+# Build output
+html/
+*.xml
+*.html
