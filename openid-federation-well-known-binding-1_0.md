@@ -5,7 +5,7 @@ ipr = "none"
 workgroup = "OpenID Connect"
 keyword = ["federation", "trust mark", "well-known", "metadata", "jwks", "digest"]
 category = "std"
-date = 2026-09-24T00:00:00Z
+date = 2026-09-29T00:00:00Z
 
 [seriesInfo]
 name = "Internet-Draft"
@@ -109,7 +109,7 @@ The binding needs no Trust Marks. As an optional addition, this specification de
 ## Non-Goals {#non-goals}
 
 - **Not a change to OpenID Federation.** This specification defines one Entity Configuration claim, `well_known_bindings`, and nothing else inside Entity Statements.
-- **Not a change to the protocols whose documents are bound.** Documents are served unchanged at their existing locations, and each protocol processes them as before, including its checks on identifier members such as `issuer`. A verifier adds the checks in (#verification). The only additions to documents are the two optional Trust Mark members.
+- **Not a change to the protocols whose documents are bound.** Documents are served unchanged at their existing locations, and each protocol processes them as before, including its checks on identifier members such as `issuer`. A verifier adds the checks in (#verification), and takes any member that Resolved Metadata carries from Resolved Metadata rather than from the document ((#metadata-precedence)). The only additions to documents are the two optional Trust Mark members.
 - **Not Trust Mark issuance.** Which parties issue which Trust Marks, what a Trust Mark certifies, and how an Entity obtains one are properties of each federation. OpenID Federation already expresses which issuers are recognized for which types (`trust_mark_issuers`, `trust_mark_owners`).
 - **Not mandatory.** A verifier decides by its own policy whether to require federation verification of a given peer.
 
@@ -132,7 +132,7 @@ This specification also uses:
 
 # Overview {#overview}
 
-OpenID Federation defines how a verifier resolves and validates the Entity's Trust Chain ([@!OpenID.Federation], Section 10). The figure shows that as one step. The verifier fetches the covered document and the Entity Configuration together, and dereferences `jwks_uri` only after the covered document's digest matches ((#verification)).
+OpenID Federation defines how a verifier resolves and validates the Entity's Trust Chain ([@!OpenID.Federation], Section 10). The figure shows that as one step. The verifier fetches the covered document and the Entity Configuration together, and dereferences `jwks_uri` only after the covered document's digest matches and, where its policy requires federation verification, after the Trust Chain is validated ((#verification)).
 
 ~~~ ascii-art
 Verifier                               Entity
@@ -190,6 +190,8 @@ The Entity Configuration still declares the Entity's Entity Types in its `metada
 
 An Entity that covers a document under this specification MAY declare Entity Type metadata that omits the members the covered document carries, including members its protocol's own metadata specification makes REQUIRED, and MAY declare an empty Entity Type metadata object. The covered document is where a verifier under this specification reads those members. A verifier MUST NOT reject an Entity Configuration because its Entity Type metadata omits such a member ((#metadata-precedence)).
 
+This does not change how `metadata_policy` applies ([@!OpenID.Federation], Section 6.1). Where a `metadata_policy` in the Trust Chain marks a member `essential` ([@!OpenID.Federation], Section 6.1.3.1.7), the Entity MUST carry that member in its Entity Type metadata, and Resolved Metadata governs it ((#metadata-precedence)). The permission to omit, and the verifier's MUST NOT, cover only members that no metadata policy in the Trust Chain requires.
+
 Example, for the authorization server in (#example-as):
 
 ```json
@@ -222,12 +224,12 @@ A verifier performs the following steps when it discovers a peer's covered docum
 3. In its `well_known_bindings` claim, take the member named by the covered document's well-known suffix. If it is absent, verification fails.
 4. Compute the covered document's digest ((#digest-computation)) and compare it to `digests`. If no element matches, verification fails.
 5. Resolve and validate a Trust Chain from the Entity Configuration to one of the verifier's configured Trust Anchors, including the signature on each Entity Statement in it ([@!OpenID.Federation], Section 10). The verifier SHOULD perform this step, and MUST if its policy requires federation verification of the peer. If it fails, verification fails.
-6. If the covered document has a `jwks_uri` member, fetch the JWK Set at that URL, compute its digest, and compare it to `jwks_digests`. If `jwks_digests` is absent, or no element matches, verification fails. The verifier MAY make this fetch as soon as step 4 succeeds, in parallel with step 5.
+6. If the covered document has a `jwks_uri` member, and Resolved Metadata carries neither `jwks` nor `signed_jwks_uri` ((#metadata-precedence)), fetch the JWK Set at the `jwks_uri` that applies: the one in Resolved Metadata if it carries one, otherwise the covered document's. Compute its digest and compare it to `jwks_digests`. If `jwks_digests` is absent, or no element matches, verification fails. A verifier whose policy requires federation verification of the peer makes this fetch after step 5 succeeds. Any other verifier MAY make it as soon as step 4 succeeds, in parallel with step 5.
 7. The verifier MAY check the Trust Marks it needs among those the covered document lists in `trust_mark_types` ((#verifying-trust-marks)). This step requires step 5.
 
 Without step 5, verification relies on DNS and the Web PKI ((#without-trust-chain)). The verifier uses the covered document, and the protocol keys in the JWK Set, only after the steps it performs succeed.
 
-The `jwks_uri` fetch is in step 6, after the covered document's digest has matched, so that the verifier never dereferences a URL taken from an unauthenticated document ((#unauthenticated-content)). Steps 1 and 2 fetch locations derived from the peer's identifier, which the verifier already has.
+The `jwks_uri` fetch is in step 6, after the covered document is authenticated, so that the verifier never dereferences a URL taken from an unauthenticated document ((#unauthenticated-content)). Steps 1 and 2 fetch locations derived from the peer's identifier, which the verifier already has.
 
 ## Peer Identifiers {#peer-identifiers}
 
@@ -239,9 +241,11 @@ A protocol whose peer identifier is not such a URL, for example a bare domain na
 
 Entity Type metadata in the Entity Configuration, and the Resolved Metadata that results from applying `metadata_policy` to it ([@!OpenID.Federation], Section 6.1), can carry members that also appear in the covered document, such as `issuer`, `jwks`, or `jwks_uri`. Resolved Metadata governs every member it carries: the verifier uses the value from Resolved Metadata and ignores the covered document's value for that member. The covered document supplies the members Resolved Metadata does not carry.
 
-An Entity SHOULD NOT carry the same member in both. An Entity cannot prevent a Superior from supplying one through `metadata_policy`, which is why Resolved Metadata governs rather than the two being required to agree.
+An Entity SHOULD NOT carry the same member in both, except a member whose value must equal the Entity Identifier, such as `issuer` ((#peer-identifiers)). Carrying such a member in both places cannot introduce a disagreement, and lets Entity Type metadata meet the protocol's own metadata specification. An Entity cannot prevent a Superior from supplying a member through `metadata_policy`, which is why Resolved Metadata governs rather than the two being required to agree.
 
-An Entity that publishes its protocol keys in its Entity Type metadata, by `jwks` or by `signed_jwks_uri` ([@!OpenID.Federation]), does not need this specification for those keys, and its covered document has no `jwks_uri` to bind. If such an Entity also serves a covered document with a `jwks_uri`, Resolved Metadata governs and the JWK Set that `jwks_digests` binds is not used.
+If Resolved Metadata carries `jwks` or `signed_jwks_uri` ([@!OpenID.Federation], Section 5.2.1), that is the only source of the Entity's protocol keys. Step 6 of (#verification) does not run, and the JWK Set that `jwks_digests` binds is not used. An Entity that publishes its protocol keys this way does not need this specification for them, and its covered document has no `jwks_uri` to bind.
+
+If Resolved Metadata carries `jwks_uri`, step 6 fetches the JWK Set at that URL and still checks it against `jwks_digests`. The digest binds the JWK Set's octets, not its location, so a `jwks_uri` supplied by a Superior verifies only if it serves the JWK Set the Entity signed. Where the covered document has no `jwks_uri`, there is no `jwks_digests`, and a `jwks_uri` in Resolved Metadata is authenticated by DNS and the Web PKI alone.
 
 ## Verification Outcomes {#outcomes}
 
@@ -249,8 +253,10 @@ Verification either succeeds or fails; there is no partial result. A verifier wh
 
 Failures are of two kinds, and they differ in how a verifier retries and caches:
 
-- **Transient**: the Entity Configuration, a Subordinate Statement, or the JWK Set could not be fetched. The verifier MAY retry, and MUST NOT cache the outcome.
-- **Authoritative**: the Entity Configuration is invalid, `well_known_bindings` has no member for the well-known suffix, `jwks_digests` is absent where it is required, a digest does not match, or the Trust Chain does not validate. Retrying the same fetches does not change the result.
+- **Transient**: the covered document, the Entity Configuration, a Subordinate Statement, or the JWK Set could not be fetched, other than as listed under authoritative. The verifier MAY retry. It MAY cache the failure for a short period, to bound its retries ((#resolution-cost)), and MUST NOT treat a cached transient failure as success or as non-participation.
+- **Authoritative**: the fetch of the Entity Configuration returns 404 or 410, the Entity Configuration is invalid, `well_known_bindings` has no member for the well-known suffix, `jwks_digests` is absent where it is required, a digest does not match, or the Trust Chain does not validate. Retrying the same fetches does not change the result. A 404 or 410 means the peer does not participate, and the verifier MAY cache it as HTTP caching permits ([@!RFC9111]).
+
+A verifier whose policy does not require federation verification of the peer MAY proceed without it after a failure. (#without-trust-chain) states what that verifier does and does not detect.
 
 On a digest mismatch, the verifier MAY re-fetch the Entity Configuration once, in case the Entity replaced a document without sequencing the update ((#updates)), and compare the digests again. It MUST rate-limit such re-fetches per Entity, and MUST NOT extend the lifetime of a cached Entity Configuration past its `exp` on account of one.
 
@@ -355,7 +361,7 @@ An attacker holding an Entity's Federation Entity Key can issue an Entity Config
 
 ## Protocol Key Compromise {#protocol-key-compromise}
 
-An attacker who obtains a protocol key can use it until the Entity removes the key's JWK Set from `jwks_digests` and every Entity Configuration that listed it has expired. The overlap in (#updates) works against the Entity here: while both the old and the new digest are listed, an attacker who can answer for the origin can serve the superseded JWK Set, and a verifier accepts it. An Entity replacing a compromised key therefore skips the overlap: it issues an Entity Configuration listing only the new digest, and then serves only the new JWK Set. Verifiers that have not yet fetched that Entity Configuration fail to verify the old JWK Set, which is the intended outcome.
+An attacker who obtains a protocol key can use it until the Entity removes the key's JWK Set from `jwks_digests` and every Entity Configuration that listed it has expired. The overlap in (#updates) works against the Entity here: while both the old and the new digest are listed, an attacker who can answer for the origin can serve the superseded JWK Set, and a verifier accepts it. An Entity replacing a compromised key therefore skips the overlap: it issues an Entity Configuration listing only the new digest, and then serves only the new JWK Set. A verifier still holding an earlier Entity Configuration fails to verify the new JWK Set until it re-fetches the Entity Configuration ((#outcomes)). That failure is the availability cost of skipping the overlap.
 
 Verifiers holding an unexpired Entity Configuration that lists the compromised key's digest continue to accept it ((#caching)). The residual exposure is the longest remaining lifetime among the Entity Configurations the Entity has issued, so an Entity SHOULD use an `exp` no longer than the exposure it is willing to carry. There is no revocation signal short of that; OpenID Federation has none for protocol keys, and this specification adds none.
 
@@ -367,13 +373,19 @@ The Trust Anchor's Federation Entity Keys configured in a verifier are its root 
 
 ## Unauthenticated Content Before Verification {#unauthenticated-content}
 
-A covered document is unauthenticated until its digest matches in step 4 of (#verification), and, for a verifier whose policy requires federation verification, until the Trust Chain is validated in step 5. Before then, the verifier MUST NOT act on any member of the covered document. This includes `trust_mark_types`, `trust_mark_types_required`, and every URL-valued member: the verifier MUST NOT dereference a URL taken from a covered document whose digest has not matched. An earlier design fetched the JWK Set at `jwks_uri` before the digest check, which let an attacker who could modify the covered document in transit choose a URL for the verifier to fetch. Step 6 is after the digest check for that reason.
+A covered document is unauthenticated until its digest matches in step 4 of (#verification), and, for a verifier whose policy requires federation verification, until the Trust Chain is validated in step 5. Before then, the verifier MUST NOT act on any member of the covered document. This includes `trust_mark_types`, `trust_mark_types_required`, and every URL-valued member: the verifier MUST NOT dereference a URL taken from a covered document before then. Step 6 is placed after these checks for that reason.
 
-The fetches in steps 1 and 2 are to locations derived from the peer's identifier, which the verifier holds before it reads anything the peer serves. They are the fetches the peer's protocol makes without this specification.
+The fetches in steps 1 and 2 are to locations derived from the peer's identifier, which the verifier holds before it reads anything the peer serves. Step 1 is the fetch the peer's protocol makes without this specification.
 
 ## Verification Without a Trust Chain {#without-trust-chain}
 
 A verifier that skips step 5 of (#verification) has checked only that the covered document and JWK Set match an Entity Configuration served by the same origin. That detects a document changed without a matching change to the Entity Configuration. It does not detect an attacker who can answer for the origin, who can serve a matching Entity Configuration. Such a verifier relies on DNS and the Web PKI as it would without this specification.
+
+The same holds for a verifier whose policy does not require federation verification and that proceeds without it after a failure ((#outcomes)), even if it performs step 5. An attacker who can answer for the origin can serve no Entity Configuration, and the verifier proceeds. Its checks detect a covered document or JWK Set that the Entity changed without updating its Entity Configuration, and nothing more.
+
+## Metadata Policy and Covered Documents {#metadata-policy-bypass}
+
+`metadata_policy` operators such as `one_of` and `subset_of` ([@!OpenID.Federation], Section 6.1.3.1) apply to Entity Type metadata. A member that the Entity carries only in its covered document is outside every Superior's policy. A Superior that needs to constrain a member marks it `essential` as well. The Entity must then carry it in Entity Type metadata ((#well-known-bindings)), where the policy applies, and Resolved Metadata governs it ((#metadata-precedence)).
 
 ## Other URLs in Covered Documents
 
@@ -387,7 +399,7 @@ A verifier that skips step 5 of (#verification) has checked only that the covere
 
 `trust_mark_types` narrows which Trust Marks count for a role. It cannot add one, because a listed type counts only with a valid Trust Mark ((#trust-mark-types)). Where the Trust Mark Issuer offers a Trust Mark Status endpoint ([@!OpenID.Federation], Section 8.4), the verifier MAY query it.
 
-## Resolution Cost
+## Resolution Cost {#resolution-cost}
 
 Trust Chain resolution adds fetches to metadata discovery. An attacker who can cause a verifier to discover many peers can use this to amplify load on the verifier and on Superiors' fetch endpoints. Verifiers SHOULD cache per (#caching), and SHOULD bound the rate of Trust Chain resolution.
 
@@ -431,6 +443,12 @@ This specification requests registration of the following in the "JSON Web Token
     - Added (#protocol-key-compromise): revocation skips the update overlap, and residual exposure is the Entity Configuration lifetime.
     - Scoped `trust_mark_types_required` to role at document granularity ((#trust-mark-types-required)).
     - Named the convention for extension members that carry digests of a URL-valued member ((#well-known-bindings)).
+    - A `metadata_policy` that marks a member `essential` requires it in Entity Type metadata; the permission to omit covers only members no policy requires ((#well-known-bindings), (#metadata-policy-bypass)).
+    - A verifier whose policy requires federation verification fetches `jwks_uri` only after the Trust Chain validates ((#verification)).
+    - Stated the key source when Resolved Metadata carries `jwks`, `signed_jwks_uri`, or `jwks_uri` ((#metadata-precedence)).
+    - Members whose value must equal the Entity Identifier, such as `issuer`, may appear in both Entity Type metadata and the covered document ((#metadata-precedence)).
+    - A 404 or 410 for the Entity Configuration is authoritative non-participation; transient failures may be cached briefly as failures ((#outcomes)).
+    - Stated what verification detects when the verifier's policy does not require it ((#without-trust-chain)).
     - Editorial: BCP 14 boilerplate, parenthesized cross-references.
 - -00
     - Initial draft.
@@ -447,7 +465,7 @@ Digest values are illustrative. Entity Configurations are shown as JWT Claims Se
 
 ## OAuth Authorization Server {#example-as}
 
-Entity Configuration of an authorization server, served at `https://as.bank.example/.well-known/openid-federation`. It holds the payment-institution Trust Mark type in its authorization server role, so it meets the requirement of the protected resource in ((#trust-mark-types-required)).
+Entity Configuration of an authorization server, served at `https://as.bank.example/.well-known/openid-federation`. It holds the payment-institution Trust Mark type in its authorization server role, so it meets the requirement of the protected resource in (#trust-mark-types-required).
 
 ```json
 {
@@ -663,7 +681,7 @@ With `jwks_digests`, verifiers that do not use OpenID Federation fetch the same 
 
 ## Why Arrays of Digests
 
-A digest pins one version of a document, and verifiers cache Entity Configurations for their lifetime. Listing old and new digests together lets the Entity pre-publish the new digest, as OpenID Federation pre-publishes a Trust Anchor's next key. The alternative is to require verifiers to re-fetch on mismatch. That shifts the cost to every verifier and creates a forced-fetch vector, so it is recorded as an open issue.
+A digest pins one version of a document, and verifiers cache Entity Configurations for their lifetime. Listing old and new digests together lets the Entity pre-publish the new digest, as OpenID Federation pre-publishes a Trust Anchor's next key. The alternative is to require verifiers to re-fetch on mismatch. That shifts the cost to every verifier and creates a forced-fetch vector, so a verifier MAY re-fetch at most once per mismatch, rate-limited per Entity ((#outcomes)), and the overlap is what keeps that rare.
 
 ## Why `digest_alg` and base64url
 
