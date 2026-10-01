@@ -21,13 +21,13 @@
 <!-- Generator version information:
   xml2rfc 3.34.1
     Python 3.10.21
-    ConfigArgParse 1.7.7
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.3
     natsort 8.4.0
-    platformdirs 4.11.12
+    platformdirs 4.12.2
     pycountry 26.2.16
     PyYAML 6.0.3
     requests 2.34.2
@@ -1244,7 +1244,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-09-24" class="published">24 September 2026</time>
+<time datetime="2026-09-29" class="published">29 September 2026</time>
     </dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
@@ -1302,10 +1302,19 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-verification" class="internal xref">Verification</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-identifiers-with-a-path" class="internal xref">Identifiers with a Path</a></p>
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-peer-identifiers" class="internal xref">Peer Identifiers</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-caching" class="internal xref">Caching</a></p>
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-metadata-precedence" class="internal xref">Metadata Precedence</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-verification-outcomes" class="internal xref">Verification Outcomes</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-identifiers-with-a-path" class="internal xref">Identifiers with a Path</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-caching" class="internal xref">Caching</a></p>
 </li>
             </ul>
 </li>
@@ -1316,10 +1325,10 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-trust-marks-in-well-known-d" class="internal xref">Trust Marks in Well-Known Documents</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-trust-mark-types" class="internal xref">trust<em>mark</em>types</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-trust_mark_types" class="internal xref"><code>trust_mark_types</code></a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-trust-mark-types_required" class="internal xref">trust<em>mark</em>types_required</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-trust_mark_types_required" class="internal xref"><code>trust_mark_types_required</code></a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
                 <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-verifying-trust-marks" class="internal xref">Verifying Trust Marks</a></p>
@@ -1342,25 +1351,31 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="auto internal xref">9.3</a>.  <a href="#name-federation-key-compromise" class="internal xref">Federation Key Compromise</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
-                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-trust-anchor-key-rollover" class="internal xref">Trust Anchor Key Rollover</a></p>
+                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-protocol-key-compromise" class="internal xref">Protocol Key Compromise</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
-                <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-unauthenticated-content-bef" class="internal xref">Unauthenticated Content Before Verification</a></p>
+                <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-trust-anchor-key-rollover" class="internal xref">Trust Anchor Key Rollover</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6">
-                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-verification-without-a-trus" class="internal xref">Verification Without a Trust Chain</a></p>
+                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-unauthenticated-content-bef" class="internal xref">Unauthenticated Content Before Verification</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.7">
-                <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-other-urls-in-covered-docum" class="internal xref">Other URLs in Covered Documents</a></p>
+                <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-verification-without-a-trus" class="internal xref">Verification Without a Trust Chain</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.8">
-                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-published-requirements-are-" class="internal xref">Published Requirements Are Not Enforcement</a></p>
+                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-metadata-policy-and-covered" class="internal xref">Metadata Policy and Covered Documents</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.9">
-                <p id="section-toc.1-1.9.2.9.1"><a href="#section-9.9" class="auto internal xref">9.9</a>.  <a href="#name-trust-mark-selection" class="internal xref">Trust Mark Selection</a></p>
+                <p id="section-toc.1-1.9.2.9.1"><a href="#section-9.9" class="auto internal xref">9.9</a>.  <a href="#name-other-urls-in-covered-docum" class="internal xref">Other URLs in Covered Documents</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.10">
-                <p id="section-toc.1-1.9.2.10.1"><a href="#section-9.10" class="auto internal xref">9.10</a>. <a href="#name-resolution-cost" class="internal xref">Resolution Cost</a></p>
+                <p id="section-toc.1-1.9.2.10.1"><a href="#section-9.10" class="auto internal xref">9.10</a>. <a href="#name-published-requirements-are-" class="internal xref">Published Requirements Are Not Enforcement</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.11">
+                <p id="section-toc.1-1.9.2.11.1"><a href="#section-9.11" class="auto internal xref">9.11</a>. <a href="#name-trust-mark-selection" class="internal xref">Trust Mark Selection</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.12">
+                <p id="section-toc.1-1.9.2.12.1"><a href="#section-9.12" class="auto internal xref">9.12</a>. <a href="#name-resolution-cost" class="internal xref">Resolution Cost</a></p>
 </li>
             </ul>
 </li>
@@ -1467,7 +1482,7 @@ li > p:last-of-type:only-child {
 <p id="section-1-2">That is sufficient for many deployments. It is not sufficient where the Web PKI is not an acceptable root of trust for protocol keys, or where a party needs to know more than "this origin published these keys", for example that the origin belongs to an accredited payment institution.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">OpenID Federation 1.1 <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> binds an Entity's Federation Entity Keys to its Entity Identifier through a Trust Chain, independently of the Web PKI. It expresses accreditation of an Entity by a third party as Trust Marks. It binds a JWK Set inline as <code>jwks</code>, or as a signed JWT at <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1). For OpenID Connect, OpenID Federation for OpenID Connect 1.1 <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span> defines a different binding for metadata: OpenID Provider and Relying Party metadata is carried in Entity Statements, and metadata policies cascade down the Trust Chain to produce the metadata a verifier uses (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). Neither authenticates documents that a protocol publishes at its own well-known URI, or a JWK Set served as plain JSON.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This specification provides that binding. An Entity lists, in a <code>well_known_bindings</code> claim in its Entity Configuration, digests of its well-known documents and of the JWK Sets they reference by <code>jwks_uri</code>. The Entity signs these digests with its Federation Entity Key, which the Trust Chain binds to its Entity Identifier. A verifier that validates the Trust Chain and checks the digests has authenticated the Entity's protocol metadata and protocol keys. It relies on DNS and the Web PKI only for transport and as a redundant check.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">The binding needs no Trust Marks. As an optional addition, this specification defines two members with which a well-known document that is a JSON object states which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of the Entities it deals with <a href="#trust-marks-in-documents" class="auto internal xref">Section 8</a>. The document's digest authenticates these statements.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The binding needs no Trust Marks. As an optional addition, this specification defines two members with which a well-known document that is a JSON object states which of the Entity's Trust Marks apply to the role it describes, and which Trust Marks the Entity requires of the Entities it deals with (<a href="#trust-marks-in-documents" class="auto internal xref">Section 8</a>). The document's digest authenticates these statements.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <div id="non-goals">
 <section id="section-1.1">
         <h3 id="name-non-goals">
@@ -1478,7 +1493,7 @@ li > p:last-of-type:only-child {
             <p id="section-1.1-1.1.1"><strong>Not a change to OpenID Federation.</strong> This specification defines one Entity Configuration claim, <code>well_known_bindings</code>, and nothing else inside Entity Statements.<a href="#section-1.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-1.2">
-            <p id="section-1.1-1.2.1"><strong>Not a change to the protocols whose documents are bound.</strong> Documents are served unchanged at their existing locations, and each protocol processes them as before, including its checks on identifier members such as <code>issuer</code>. A verifier adds the checks in <a href="#verification" class="auto internal xref">Section 6</a>. The only additions to documents are the two optional Trust Mark members.<a href="#section-1.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-1.2.1"><strong>Not a change to the protocols whose documents are bound.</strong> Documents are served unchanged at their existing locations, and each protocol processes them as before, including its checks on identifier members such as <code>issuer</code>. A verifier adds the checks in <a href="#verification" class="auto internal xref">Section 6</a>, and takes any member that Resolved Metadata carries from Resolved Metadata rather than from the document (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>). The only additions to documents are the two optional Trust Mark members.<a href="#section-1.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-1.3">
             <p id="section-1.1-1.3.1"><strong>Not Trust Mark issuance.</strong> Which parties issue which Trust Marks, what a Trust Mark certifies, and how an Entity obtains one are properties of each federation. OpenID Federation already expresses which issuers are recognized for which types (<code>trust_mark_issuers</code>, <code>trust_mark_owners</code>).<a href="#section-1.1-1.3.1" class="pilcrow">¶</a></p>
@@ -1496,7 +1511,7 @@ li > p:last-of-type:only-child {
       <h2 id="name-conventions-and-definitions">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
       </h2>
-<p id="section-2-1">{::boilerplate bcp14-tagged}<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
@@ -1533,7 +1548,7 @@ li > p:last-of-type:only-child {
       <h2 id="name-overview">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-overview" class="section-name selfRef">Overview</a>
       </h2>
-<p id="section-4-1">OpenID Federation defines how a verifier resolves and validates the Entity's Trust Chain (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10). The figure shows that as one step, after the digest checks <a href="#verification" class="auto internal xref">Section 6</a>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">OpenID Federation defines how a verifier resolves and validates the Entity's Trust Chain (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10). The figure shows that as one step. The verifier fetches the covered document and the Entity Configuration together, and dereferences <code>jwks_uri</code> only after the covered document's digest matches and, where its policy requires federation verification, after the Trust Chain is validated (<a href="#verification" class="auto internal xref">Section 6</a>).<a href="#section-4-1" class="pilcrow">¶</a></p>
 <span id="name-verifying-a-covered-documen"></span><figure id="figure-1">
         <div class="lang-ascii-art sourcecode" id="section-4-2.1">
 <pre>Verifier                               Entity
@@ -1541,22 +1556,22 @@ li > p:last-of-type:only-child {
    |                                      |
    | GET /.well-known/&lt;suffix&gt;            |
    |-------------------------------------&gt;|
+   | GET /.well-known/openid-federation   |
+   |-------------------------------------&gt;|
    |  covered document                    |
    |&lt;-------------------------------------|
+   |  Entity Configuration                |
+   |&lt;-------------------------------------|
+   |                                      |
+   +- check covered document digest       |
+   +- validate Trust Chain                |
    |                                      |
    | GET jwks_uri                         |
    |-------------------------------------&gt;|
    |  JWK Set                             |
    |&lt;-------------------------------------|
    |                                      |
-   | GET /.well-known/openid-federation   |
-   |-------------------------------------&gt;|
-   |  Entity Configuration                |
-   |&lt;-------------------------------------|
-   |                                      |
-   +- check covered document digest       |
    +- check JWK Set digest                |
-   +- validate Trust Chain                |
    +- check Trust Marks (optional)        |
 </pre>
 </div>
@@ -1623,12 +1638,14 @@ li > p:last-of-type:only-child {
 </li>
       </ul>
 <p id="section-5-3">Implementations MUST support <code>sha-256</code>.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">A covered document or JWK Set matches if its digest equals any element of its array, <code>digests</code> or <code>jwks_digests</code>. An array has more than one element only while that covered document or JWK Set is being replaced <a href="#updates" class="auto internal xref">Section 7</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">Other specifications MAY define additional members of a <code>well_known_bindings</code> member value, for example digests of the image at a covered document's <code>logo_uri</code>. A verifier ignores members it does not understand.<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-4">A covered document or JWK Set matches if its digest equals any element of its array, <code>digests</code> or <code>jwks_digests</code>. An array has more than one element only while that covered document or JWK Set is being replaced (<a href="#updates" class="auto internal xref">Section 7</a>).<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-5">Other specifications MAY define additional members of a <code>well_known_bindings</code> member value, for example digests of the image at a covered document's <code>logo_uri</code>. A member holding the digests of the document at a URL-valued member of the covered document is named for that member, with a trailing <code>_uri</code> removed and <code>_digests</code> appended: <code>jwks_uri</code> gives <code>jwks_digests</code>, and <code>logo_uri</code> gives <code>logo_digests</code>. A verifier ignores members it does not understand.<a href="#section-5-5" class="pilcrow">¶</a></p>
 <p id="section-5-6">The Entity SHOULD NOT list <code>well_known_bindings</code> in the <code>crit</code> claim (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 3.1.1), so that verifiers that do not implement this specification can still use its Entity Configuration.<a href="#section-5-6" class="pilcrow">¶</a></p>
 <p id="section-5-7">The Entity Configuration still declares the Entity's Entity Types in its <code>metadata</code> claim, and every Entity has at least one (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Sections 1.2 and 3.1.1). An Entity whose protocol has no Entity Type, such as an AAuth server or a Web Bot Auth agent, can declare <code>federation_entity</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.1.1).<a href="#section-5-7" class="pilcrow">¶</a></p>
-<p id="section-5-8">Example, for the authorization server in <a href="#example-as" class="auto internal xref">Appendix A.1</a>:<a href="#section-5-8" class="pilcrow">¶</a></p>
-<div class="lang-json sourcecode" id="section-5-9">
+<p id="section-5-8">An Entity that covers a document under this specification MAY declare Entity Type metadata that omits the members the covered document carries, including members its protocol's own metadata specification makes REQUIRED, and MAY declare an empty Entity Type metadata object. The covered document is where a verifier under this specification reads those members. A verifier MUST NOT reject an Entity Configuration because its Entity Type metadata omits such a member (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>).<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-9">This does not change how <code>metadata_policy</code> applies (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). Where a <code>metadata_policy</code> in the Trust Chain marks a member <code>essential</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1.3.1.7), the Entity MUST carry that member in its Entity Type metadata, and Resolved Metadata governs it (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>). The permission to omit, and the verifier's MUST NOT, cover only members that no metadata policy in the Trust Chain requires.<a href="#section-5-9" class="pilcrow">¶</a></p>
+<p id="section-5-10">Example, for the authorization server in <a href="#example-as" class="auto internal xref">Appendix A.1</a>:<a href="#section-5-10" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-5-11">
 <pre>"well_known_bindings": {
   "oauth-authorization-server": {
     "digests": [
@@ -1639,9 +1656,9 @@ li > p:last-of-type:only-child {
     ]
   }
 }
-</pre><a href="#section-5-9" class="pilcrow">¶</a>
+</pre><a href="#section-5-11" class="pilcrow">¶</a>
 </div>
-<p id="section-5-10"><a href="#examples" class="auto internal xref">Appendix A</a> has examples for other well-known documents.<a href="#section-5-10" class="pilcrow">¶</a></p>
+<p id="section-5-12"><a href="#examples" class="auto internal xref">Appendix A</a> has examples for other well-known documents.<a href="#section-5-12" class="pilcrow">¶</a></p>
 <div id="digest-computation">
 <section id="section-5.1">
         <h3 id="name-digest-computation">
@@ -1658,45 +1675,85 @@ li > p:last-of-type:only-child {
       <h2 id="name-verification">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-verification" class="section-name selfRef">Verification</a>
       </h2>
-<p id="section-6-1">A verifier performs the following steps when it discovers a peer's covered document. They are in addition to the checks defined by the peer's protocol. Steps 1 and 2 are fetches the protocol already makes.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">A verifier performs the following steps when it discovers a peer's covered document. They are in addition to the checks defined by the peer's protocol. Step 1 is a fetch the protocol already makes.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6-2">
 <li id="section-6-2.1">
-          <p id="section-6-2.1.1">Fetch the covered document from the location its protocol defines. Do not act on its content yet, other than in step 2 <a href="#unauthenticated-content" class="auto internal xref">Section 9.5</a>.<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.1.1">Fetch the covered document from the location its protocol defines. Do not act on its content until step 4 succeeds (<a href="#unauthenticated-content" class="auto internal xref">Section 9.6</a>).<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.2">
-          <p id="section-6-2.2.1">If the covered document has a <code>jwks_uri</code> member, fetch the JWK Set at that URL.<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.2.1">Fetch the Entity Configuration for the Entity Identifier of the peer (<a href="#peer-identifiers" class="auto internal xref">Section 6.1</a>, <a href="#path-identifiers" class="auto internal xref">Section 6.4</a>). Validate it per <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 3.2. The verifier MAY make this fetch in parallel with step 1.<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.3">
-          <p id="section-6-2.3.1">Fetch the Entity Configuration for the identifier the protocol uses for the peer, such as <code>issuer</code> in <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> or <code>resource</code> in <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> <a href="#path-identifiers" class="auto internal xref">Section 6.1</a>. Its Entity Identifier MUST equal that identifier. Validate it per <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 3.2.<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.3.1">In its <code>well_known_bindings</code> claim, take the member named by the covered document's well-known suffix. If it is absent, verification fails.<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.4">
-          <p id="section-6-2.4.1">In its <code>well_known_bindings</code> claim, take the member named by the covered document's well-known suffix. If it is absent, verification fails.<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.4.1">Compute the covered document's digest (<a href="#digest-computation" class="auto internal xref">Section 5.1</a>) and compare it to <code>digests</code>. If no element matches, verification fails.<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.5">
-          <p id="section-6-2.5.1">Compute the covered document's digest <a href="#digest-computation" class="auto internal xref">Section 5.1</a>, and compare it to <code>digests</code>. If a JWK Set was fetched in step 2, compute its digest and compare it to <code>jwks_digests</code>. If <code>jwks_digests</code> is absent, or no element of either array matches, verification fails.<a href="#section-6-2.5.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.5.1">Resolve and validate a Trust Chain from the Entity Configuration to one of the verifier's configured Trust Anchors, including the signature on each Entity Statement in it (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10). The verifier SHOULD perform this step, and MUST if its policy requires federation verification of the peer. If it fails, verification fails.<a href="#section-6-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.6">
-          <p id="section-6-2.6.1">Resolve and validate a Trust Chain from the Entity Configuration to one of the verifier's configured Trust Anchors, including the signature on each Entity Statement in it (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10). The verifier SHOULD perform this step, and MUST if its policy requires federation verification of the peer. If it fails, verification fails.<a href="#section-6-2.6.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.6.1">If the covered document has a <code>jwks_uri</code> member, and Resolved Metadata carries neither <code>jwks</code> nor <code>signed_jwks_uri</code> (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>), fetch the JWK Set at the <code>jwks_uri</code> that applies: the one in Resolved Metadata if it carries one, otherwise the covered document's. Compute its digest and compare it to <code>jwks_digests</code>. If <code>jwks_digests</code> is absent, or no element matches, verification fails. A verifier whose policy requires federation verification of the peer makes this fetch after step 5 succeeds. Any other verifier MAY make it as soon as step 4 succeeds, in parallel with step 5.<a href="#section-6-2.6.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-6-2.7">
-          <p id="section-6-2.7.1">The verifier MAY check the Trust Marks it needs among those the covered document lists in <code>trust_mark_types</code> <a href="#verifying-trust-marks" class="auto internal xref">Section 8.3</a>. This step requires step 6.<a href="#section-6-2.7.1" class="pilcrow">¶</a></p>
+          <p id="section-6-2.7.1">The verifier MAY check the Trust Marks it needs among those the covered document lists in <code>trust_mark_types</code> (<a href="#verifying-trust-marks" class="auto internal xref">Section 8.3</a>). This step requires step 5.<a href="#section-6-2.7.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="section-6-3">Without step 6, verification relies on DNS and the Web PKI <a href="#without-trust-chain" class="auto internal xref">Section 9.6</a>. The verifier uses the covered document, and the protocol keys in the JWK Set, only after the steps it performs succeed.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<div id="path-identifiers">
+<p id="section-6-3">Without step 5, verification relies on DNS and the Web PKI (<a href="#without-trust-chain" class="auto internal xref">Section 9.7</a>). The verifier uses the covered document, and the protocol keys in the JWK Set, only after the steps it performs succeed.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">The <code>jwks_uri</code> fetch is in step 6, after the covered document is authenticated, so that the verifier never dereferences a URL taken from an unauthenticated document (<a href="#unauthenticated-content" class="auto internal xref">Section 9.6</a>). Steps 1 and 2 fetch locations derived from the peer's identifier, which the verifier already has.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<div id="peer-identifiers">
 <section id="section-6.1">
-        <h3 id="name-identifiers-with-a-path">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-identifiers-with-a-path" class="section-name selfRef">Identifiers with a Path</a>
+        <h3 id="name-peer-identifiers">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-peer-identifiers" class="section-name selfRef">Peer Identifiers</a>
         </h3>
-<p id="section-6.1-1"><span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> allow an identifier with a path component. The Entity Identifier is the same string, path included, so the Entity Configuration is at the identifier with <code>/.well-known/openid-federation</code> appended (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9). The protocol can place its own document differently: <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1 and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.1 insert the well-known path between the host and the path. The verifier fetches each document where its own specification places it <a href="#example-path" class="auto internal xref">Appendix A.6</a>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">The Entity Identifier of the peer is the identifier the protocol uses for it, where that identifier is an <code>https</code> URL: <code>issuer</code> in <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, <code>resource</code> in <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>. The Entity Identifier MUST equal that identifier.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">A protocol whose peer identifier is not such a URL, for example a bare domain name, defines the mapping from its identifier to an Entity Identifier. Absent such a mapping, the protocol's documents cannot be covered by this specification.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="metadata-precedence">
+<section id="section-6.2">
+        <h3 id="name-metadata-precedence">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-metadata-precedence" class="section-name selfRef">Metadata Precedence</a>
+        </h3>
+<p id="section-6.2-1">Entity Type metadata in the Entity Configuration, and the Resolved Metadata that results from applying <code>metadata_policy</code> to it (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1), can carry members that also appear in the covered document, such as <code>issuer</code>, <code>jwks</code>, or <code>jwks_uri</code>. Resolved Metadata governs every member it carries: the verifier uses the value from Resolved Metadata and ignores the covered document's value for that member. The covered document supplies the members Resolved Metadata does not carry.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">An Entity SHOULD NOT carry the same member in both, except a member whose value must equal the Entity Identifier, such as <code>issuer</code> (<a href="#peer-identifiers" class="auto internal xref">Section 6.1</a>). Carrying such a member in both places cannot introduce a disagreement, and lets Entity Type metadata meet the protocol's own metadata specification. An Entity cannot prevent a Superior from supplying a member through <code>metadata_policy</code>, which is why Resolved Metadata governs rather than the two being required to agree.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<p id="section-6.2-3">If Resolved Metadata carries <code>jwks</code> or <code>signed_jwks_uri</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 5.2.1), that is the only source of the Entity's protocol keys. Step 6 of <a href="#verification" class="auto internal xref">Section 6</a> does not run, and the JWK Set that <code>jwks_digests</code> binds is not used. An Entity that publishes its protocol keys this way does not need this specification for them, and its covered document has no <code>jwks_uri</code> to bind.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+<p id="section-6.2-4">If Resolved Metadata carries <code>jwks_uri</code>, step 6 fetches the JWK Set at that URL and still checks it against <code>jwks_digests</code>. The digest binds the JWK Set's octets, not its location, so a <code>jwks_uri</code> supplied by a Superior verifies only if it serves the JWK Set the Entity signed. Where the covered document has no <code>jwks_uri</code>, there is no <code>jwks_digests</code>, and a <code>jwks_uri</code> in Resolved Metadata is authenticated by DNS and the Web PKI alone.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="outcomes">
+<section id="section-6.3">
+        <h3 id="name-verification-outcomes">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-verification-outcomes" class="section-name selfRef">Verification Outcomes</a>
+        </h3>
+<p id="section-6.3-1">Verification either succeeds or fails; there is no partial result. A verifier whose policy requires federation verification of a peer MUST fail closed when verification fails, and MUST NOT fall back to Web PKI trust in the covered document (<a href="#published-requirements" class="auto internal xref">Section 9.10</a>).<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">Failures are of two kinds, and they differ in how a verifier retries and caches:<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.3-3.1">
+            <p id="section-6.3-3.1.1"><strong>Transient</strong>: the covered document, the Entity Configuration, a Subordinate Statement, or the JWK Set could not be fetched, other than as listed under authoritative. The verifier MAY retry. It MAY cache the failure for a short period, to bound its retries (<a href="#resolution-cost" class="auto internal xref">Section 9.12</a>), and MUST NOT treat a cached transient failure as success or as non-participation.<a href="#section-6.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.3-3.2">
+            <p id="section-6.3-3.2.1"><strong>Authoritative</strong>: the fetch of the Entity Configuration returns 404 or 410, the Entity Configuration is invalid, <code>well_known_bindings</code> has no member for the well-known suffix, <code>jwks_digests</code> is absent where it is required, a digest does not match, or the Trust Chain does not validate. Retrying the same fetches does not change the result. A 404 or 410 means the peer does not participate, and the verifier MAY cache it as HTTP caching permits (<span>[<a href="#RFC9111" class="cite xref">RFC9111</a>]</span>).<a href="#section-6.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-6.3-4">A verifier whose policy does not require federation verification of the peer MAY proceed without it after a failure. <a href="#without-trust-chain" class="auto internal xref">Section 9.7</a> states what that verifier does and does not detect.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+<p id="section-6.3-5">On a digest mismatch, the verifier MAY re-fetch the Entity Configuration once, in case the Entity replaced a document without sequencing the update (<a href="#updates" class="auto internal xref">Section 7</a>), and compare the digests again. It MUST rate-limit such re-fetches per Entity, and MUST NOT extend the lifetime of a cached Entity Configuration past its <code>exp</code> on account of one.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="path-identifiers">
+<section id="section-6.4">
+        <h3 id="name-identifiers-with-a-path">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-identifiers-with-a-path" class="section-name selfRef">Identifiers with a Path</a>
+        </h3>
+<p id="section-6.4-1"><span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> allow an identifier with a path component. The Entity Identifier is the same string, path included (<a href="#peer-identifiers" class="auto internal xref">Section 6.1</a>), so the Entity Configuration is at the identifier with <code>/.well-known/openid-federation</code> appended (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 9). The protocol can place its own document differently: <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 3.1 and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.1 insert the well-known path between the host and the path. The verifier fetches each document where its own specification places it (<a href="#example-path" class="auto internal xref">Appendix A.6</a>).<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="caching">
-<section id="section-6.2">
+<section id="section-6.5">
         <h3 id="name-caching">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-caching" class="section-name selfRef">Caching</a>
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-caching" class="section-name selfRef">Caching</a>
         </h3>
-<p id="section-6.2-1">A verifier MAY cache the outcome of verification, but not beyond the Entity Configuration's <code>exp</code>, nor beyond the expiration time of the Trust Chain if it resolved one (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10.4). Within that period, a verifier can re-fetch a covered document or JWK Set, for example on a protocol key with an unknown <code>kid</code>. It checks the new content against the digests in its cached Entity Configuration.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-1">A verifier MAY cache the outcome of verification, but not beyond the Entity Configuration's <code>exp</code>, nor beyond the expiration time of the Trust Chain if it resolved one (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 10.4). Within that period, a verifier can re-fetch a covered document or JWK Set, for example on a protocol key with an unknown <code>kid</code>. It checks the new content against the digests in its cached Entity Configuration.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1722,6 +1779,7 @@ li > p:last-of-type:only-child {
 </li>
       </ol>
 <p id="section-7-3">Step 4 can happen at the Entity Configuration's next routine re-issue. The Entity Configuration lifetime bounds the wait in step 2. An Entity that updates its documents often SHOULD use a short <code>exp</code>. Rotating a protocol key is a replacement of the JWK Set, done the same way.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">This sequence is for a planned replacement. An Entity replacing a document or key because the old one is compromised skips the overlap (<a href="#protocol-key-compromise" class="auto internal xref">Section 9.4</a>).<a href="#section-7-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust-marks-in-documents">
@@ -1735,8 +1793,8 @@ li > p:last-of-type:only-child {
 <p id="section-8-4"><span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, Section 2 permits additional metadata parameters, and <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, Section 3.2 requires consumers to ignore parameters they do not understand. Adding these members therefore does not affect existing consumers.<a href="#section-8-4" class="pilcrow">¶</a></p>
 <div id="trust-mark-types">
 <section id="section-8.1">
-        <h3 id="name-trust-mark-types">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-trust-mark-types" class="section-name selfRef">trust<em>mark</em>types</a>
+        <h3 id="name-trust_mark_types">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-trust_mark_types" class="section-name selfRef"><code>trust_mark_types</code></a>
         </h3>
 <ul class="normal">
 <li class="normal" id="section-8.1-1.1">
@@ -1760,12 +1818,12 @@ li > p:last-of-type:only-child {
 </div>
 <div id="trust-mark-types-required">
 <section id="section-8.2">
-        <h3 id="name-trust-mark-types_required">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-trust-mark-types_required" class="section-name selfRef">trust<em>mark</em>types_required</a>
+        <h3 id="name-trust_mark_types_required">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-trust_mark_types_required" class="section-name selfRef"><code>trust_mark_types_required</code></a>
         </h3>
 <ul class="normal">
 <li class="normal" id="section-8.2-1.1">
-            <p id="section-8.2-1.1.1"><code>trust_mark_types_required</code> (OPTIONAL): JSON object. Each member name is the well-known suffix of the covered document that describes a counterparty role. Each member value is a non-empty JSON array of <code>trust_mark_type</code> strings that an Entity in that role MUST hold <a href="#trust-mark-types" class="auto internal xref">Section 8.1</a> for this Entity to deal with it in that role.<a href="#section-8.2-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-8.2-1.1.1"><code>trust_mark_types_required</code> (OPTIONAL): JSON object. Each member name is the well-known suffix of the covered document that describes a counterparty role. Each member value is a non-empty JSON array of <code>trust_mark_type</code> strings that an Entity in that role MUST hold (<a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>) for this Entity to deal with it in that role.<a href="#section-8.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-8.2-2">Example: an OAuth protected resource that accepts access tokens only from authorization servers holding a payment-institution Trust Mark. <a href="#example-as" class="auto internal xref">Appendix A.1</a> shows an authorization server that meets this requirement.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
@@ -1785,7 +1843,8 @@ li > p:last-of-type:only-child {
 }
 </pre><a href="#section-8.2-3" class="pilcrow">¶</a>
 </div>
-<p id="section-8.2-4"><code>trust_mark_types_required</code> is for discovery. It lets a client learn before a call that the resource would refuse its authorization server, and lets an operator learn which Trust Marks it needs to obtain. The Entity enforces its requirements from its own policy, whether or not it publishes them <a href="#published-requirements" class="auto internal xref">Section 9.8</a>.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.2-4"><code>trust_mark_types_required</code> is for discovery. It lets a client learn before a call that the resource would refuse its authorization server, and lets an operator learn which Trust Marks it needs to obtain. The Entity enforces its requirements from its own policy, whether or not it publishes them (<a href="#published-requirements" class="auto internal xref">Section 9.10</a>).<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.2-5">The well-known suffix identifies a counterparty role at the granularity of one document. A party can act in capacities that its documents do not distinguish: an authorization server serves one <code>oauth-authorization-server</code> document whatever the capacities it offers. A protocol that needs to require different accreditation of capacities within one document's role defines its own mechanism; <code>trust_mark_types_required</code> cannot express it.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="verifying-trust-marks">
@@ -1793,7 +1852,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-verifying-trust-marks">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-verifying-trust-marks" class="section-name selfRef">Verifying Trust Marks</a>
         </h3>
-<p id="section-8.3-1">A verifier whose policy requires Trust Marks of a peer in a role first verifies the peer's covered document for that role, including step 6 <a href="#verification" class="auto internal xref">Section 6</a>. It then checks that the peer holds each required type in that role <a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-1">A verifier whose policy requires Trust Marks of a peer in a role first verifies the peer's covered document for that role, including step 5 (<a href="#verification" class="auto internal xref">Section 6</a>). It then checks that the peer holds each required type in that role (<a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>).<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="errors">
@@ -1814,7 +1873,7 @@ li > p:last-of-type:only-child {
 </li>
         </ul>
 <p id="section-8.4-3">The adopting protocol defines the HTTP status code and where the error is returned. The <code>entity</code> can identify a party other than the requester, such as the requester's authorization server. A party that relays the error relays it unchanged.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
-<p id="section-8.4-4">A peer that fails verification <a href="#verification" class="auto internal xref">Section 6</a> has not been refused on Trust Marks. The protocol reports that as a metadata or key discovery failure.<a href="#section-8.4-4" class="pilcrow">¶</a></p>
+<p id="section-8.4-4">A peer that fails verification (<a href="#verification" class="auto internal xref">Section 6</a>) has not been refused on Trust Marks. The protocol reports that as a metadata or key discovery failure.<a href="#section-8.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1848,60 +1907,80 @@ li > p:last-of-type:only-child {
 <p id="section-9.3-1">An attacker holding an Entity's Federation Entity Key can issue an Entity Configuration that lists digests of documents the attacker chooses, and so substitute the Entity's protocol keys. This lasts until the Superior removes the key from its Subordinate Statement and Trust Chains cached by verifiers expire. Entities SHOULD protect Federation Entity Keys at least as well as their protocol keys, and SHOULD NOT hold the two in the same place.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="trust-anchor-key-rollover">
+<div id="protocol-key-compromise">
 <section id="section-9.4">
-        <h3 id="name-trust-anchor-key-rollover">
-<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-trust-anchor-key-rollover" class="section-name selfRef">Trust Anchor Key Rollover</a>
+        <h3 id="name-protocol-key-compromise">
+<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-protocol-key-compromise" class="section-name selfRef">Protocol Key Compromise</a>
         </h3>
-<p id="section-9.4-1">The Trust Anchor's Federation Entity Keys configured in a verifier are its root of trust. The Trust Anchor publishes its next key in its Entity Configuration before signing with it (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 11.2). A verifier that does not refresh the Trust Anchor's Entity Configuration within that overlap can no longer validate Trust Chains, and must be re-configured out of band. OpenID Federation defines no hold-down period comparable to <span>[<a href="#RFC5011" class="cite xref">RFC5011</a>]</span>, so a compromised current Trust Anchor key can introduce a replacement key that verifiers accept immediately.<a href="#section-9.4-1" class="pilcrow">¶</a></p>
+<p id="section-9.4-1">An attacker who obtains a protocol key can use it until the Entity removes the key's JWK Set from <code>jwks_digests</code> and every Entity Configuration that listed it has expired. The overlap in <a href="#updates" class="auto internal xref">Section 7</a> works against the Entity here: while both the old and the new digest are listed, an attacker who can answer for the origin can serve the superseded JWK Set, and a verifier accepts it. An Entity replacing a compromised key therefore skips the overlap: it issues an Entity Configuration listing only the new digest, and then serves only the new JWK Set. A verifier still holding an earlier Entity Configuration fails to verify the new JWK Set until it re-fetches the Entity Configuration (<a href="#outcomes" class="auto internal xref">Section 6.3</a>). That failure is the availability cost of skipping the overlap.<a href="#section-9.4-1" class="pilcrow">¶</a></p>
+<p id="section-9.4-2">Verifiers holding an unexpired Entity Configuration that lists the compromised key's digest continue to accept it (<a href="#caching" class="auto internal xref">Section 6.5</a>). The residual exposure is the longest remaining lifetime among the Entity Configurations the Entity has issued, so an Entity SHOULD use an <code>exp</code> no longer than the exposure it is willing to carry. There is no revocation signal short of that; OpenID Federation has none for protocol keys, and this specification adds none.<a href="#section-9.4-2" class="pilcrow">¶</a></p>
+<p id="section-9.4-3">The same applies to any covered document whose replacement is a revocation rather than an update.<a href="#section-9.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-anchor-key-rollover">
+<section id="section-9.5">
+        <h3 id="name-trust-anchor-key-rollover">
+<a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-trust-anchor-key-rollover" class="section-name selfRef">Trust Anchor Key Rollover</a>
+        </h3>
+<p id="section-9.5-1">The Trust Anchor's Federation Entity Keys configured in a verifier are its root of trust. The Trust Anchor publishes its next key in its Entity Configuration before signing with it (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 11.2). A verifier that does not refresh the Trust Anchor's Entity Configuration within that overlap can no longer validate Trust Chains, and must be re-configured out of band. OpenID Federation defines no hold-down period comparable to <span>[<a href="#RFC5011" class="cite xref">RFC5011</a>]</span>, so a compromised current Trust Anchor key can introduce a replacement key that verifiers accept immediately.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="unauthenticated-content">
-<section id="section-9.5">
+<section id="section-9.6">
         <h3 id="name-unauthenticated-content-bef">
-<a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-unauthenticated-content-bef" class="section-name selfRef">Unauthenticated Content Before Verification</a>
+<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-unauthenticated-content-bef" class="section-name selfRef">Unauthenticated Content Before Verification</a>
         </h3>
-<p id="section-9.5-1">A covered document and its JWK Set are unauthenticated until their digests match in step 5 of <a href="#verification" class="auto internal xref">Section 6</a>, and, for a verifier whose policy requires federation verification, until the Trust Chain is validated in step 6. Before then, the verifier MUST NOT act on any member of the covered document other than fetching the JWK Set in step 2. This includes URL-valued members, <code>trust_mark_types</code>, and <code>trust_mark_types_required</code>. A modified covered document can make the verifier fetch a JWK Set from a URL of an attacker's choosing. The verifier discards that JWK Set when its digest does not match.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
+<p id="section-9.6-1">A covered document is unauthenticated until its digest matches in step 4 of <a href="#verification" class="auto internal xref">Section 6</a>, and, for a verifier whose policy requires federation verification, until the Trust Chain is validated in step 5. Before then, the verifier MUST NOT act on any member of the covered document. This includes <code>trust_mark_types</code>, <code>trust_mark_types_required</code>, and every URL-valued member: the verifier MUST NOT dereference a URL taken from a covered document before then. Step 6 is placed after these checks for that reason.<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+<p id="section-9.6-2">The fetches in steps 1 and 2 are to locations derived from the peer's identifier, which the verifier holds before it reads anything the peer serves. Step 1 is the fetch the peer's protocol makes without this specification.<a href="#section-9.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="without-trust-chain">
-<section id="section-9.6">
+<section id="section-9.7">
         <h3 id="name-verification-without-a-trus">
-<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-verification-without-a-trus" class="section-name selfRef">Verification Without a Trust Chain</a>
+<a href="#section-9.7" class="section-number selfRef">9.7. </a><a href="#name-verification-without-a-trus" class="section-name selfRef">Verification Without a Trust Chain</a>
         </h3>
-<p id="section-9.6-1">A verifier that skips step 6 of <a href="#verification" class="auto internal xref">Section 6</a> has checked only that the covered document and JWK Set match an Entity Configuration served by the same origin. That detects a document changed without a matching change to the Entity Configuration. It does not detect an attacker who can answer for the origin, who can serve a matching Entity Configuration. Such a verifier relies on DNS and the Web PKI as it would without this specification.<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+<p id="section-9.7-1">A verifier that skips step 5 of <a href="#verification" class="auto internal xref">Section 6</a> has checked only that the covered document and JWK Set match an Entity Configuration served by the same origin. That detects a document changed without a matching change to the Entity Configuration. It does not detect an attacker who can answer for the origin, who can serve a matching Entity Configuration. Such a verifier relies on DNS and the Web PKI as it would without this specification.<a href="#section-9.7-1" class="pilcrow">¶</a></p>
+<p id="section-9.7-2">The same holds for a verifier whose policy does not require federation verification and that proceeds without it after a failure (<a href="#outcomes" class="auto internal xref">Section 6.3</a>), even if it performs step 5. An attacker who can answer for the origin can serve no Entity Configuration, and the verifier proceeds. Its checks detect a covered document or JWK Set that the Entity changed without updating its Entity Configuration, and nothing more.<a href="#section-9.7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="metadata-policy-bypass">
+<section id="section-9.8">
+        <h3 id="name-metadata-policy-and-covered">
+<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-metadata-policy-and-covered" class="section-name selfRef">Metadata Policy and Covered Documents</a>
+        </h3>
+<p id="section-9.8-1"><code>metadata_policy</code> operators such as <code>one_of</code> and <code>subset_of</code> (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1.3.1) apply to Entity Type metadata. A member that the Entity carries only in its covered document is outside every Superior's policy. A Superior that needs to constrain a member marks it <code>essential</code> as well. The Entity must then carry it in Entity Type metadata (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>), where the policy applies, and Resolved Metadata governs it (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>).<a href="#section-9.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="other-urls-in-covered-documents">
-<section id="section-9.7">
+<section id="section-9.9">
         <h3 id="name-other-urls-in-covered-docum">
-<a href="#section-9.7" class="section-number selfRef">9.7. </a><a href="#name-other-urls-in-covered-docum" class="section-name selfRef">Other URLs in Covered Documents</a>
+<a href="#section-9.9" class="section-number selfRef">9.9. </a><a href="#name-other-urls-in-covered-docum" class="section-name selfRef">Other URLs in Covered Documents</a>
         </h3>
-<p id="section-9.7-1"><code>jwks_digests</code> authenticates only the JWK Set. For any other URL-valued member of a covered document, the URL is authenticated but the document at that URL is not. A specification that needs such a document authenticated can define a member for its digests <a href="#well-known-bindings" class="auto internal xref">Section 5</a>.<a href="#section-9.7-1" class="pilcrow">¶</a></p>
+<p id="section-9.9-1"><code>jwks_digests</code> authenticates only the JWK Set. For any other URL-valued member of a covered document, the URL is authenticated but the document at that URL is not. A specification that needs such a document authenticated can define a member for its digests (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>).<a href="#section-9.9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="published-requirements">
-<section id="section-9.8">
+<section id="section-9.10">
         <h3 id="name-published-requirements-are-">
-<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-published-requirements-are-" class="section-name selfRef">Published Requirements Are Not Enforcement</a>
+<a href="#section-9.10" class="section-number selfRef">9.10. </a><a href="#name-published-requirements-are-" class="section-name selfRef">Published Requirements Are Not Enforcement</a>
         </h3>
-<p id="section-9.8-1"><code>trust_mark_types_required</code> informs counterparties; it does not bind the publisher. Whether a verifier requires federation verification or Trust Marks of a peer comes from the verifier's own configuration, never from the peer's documents. A verifier whose policy requires federation verification of a peer MUST NOT fall back to Web PKI trust because the peer's covered document omits <code>trust_mark_types</code>, or because the peer serves no Entity Configuration.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
+<p id="section-9.10-1"><code>trust_mark_types_required</code> informs counterparties; it does not bind the publisher. Whether a verifier requires federation verification or Trust Marks of a peer comes from the verifier's own configuration, never from the peer's documents. A verifier whose policy requires federation verification of a peer MUST NOT fall back to Web PKI trust because the peer's covered document omits <code>trust_mark_types</code>, or because the peer serves no Entity Configuration.<a href="#section-9.10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust-mark-selection">
-<section id="section-9.9">
+<section id="section-9.11">
         <h3 id="name-trust-mark-selection">
-<a href="#section-9.9" class="section-number selfRef">9.9. </a><a href="#name-trust-mark-selection" class="section-name selfRef">Trust Mark Selection</a>
+<a href="#section-9.11" class="section-number selfRef">9.11. </a><a href="#name-trust-mark-selection" class="section-name selfRef">Trust Mark Selection</a>
         </h3>
-<p id="section-9.9-1"><code>trust_mark_types</code> narrows which Trust Marks count for a role. It cannot add one, because a listed type counts only with a valid Trust Mark <a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>. Where the Trust Mark Issuer offers a Trust Mark Status endpoint (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 8.4), the verifier MAY query it.<a href="#section-9.9-1" class="pilcrow">¶</a></p>
+<p id="section-9.11-1"><code>trust_mark_types</code> narrows which Trust Marks count for a role. It cannot add one, because a listed type counts only with a valid Trust Mark (<a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>). Where the Trust Mark Issuer offers a Trust Mark Status endpoint (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 8.4), the verifier MAY query it.<a href="#section-9.11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="resolution-cost">
-<section id="section-9.10">
+<section id="section-9.12">
         <h3 id="name-resolution-cost">
-<a href="#section-9.10" class="section-number selfRef">9.10. </a><a href="#name-resolution-cost" class="section-name selfRef">Resolution Cost</a>
+<a href="#section-9.12" class="section-number selfRef">9.12. </a><a href="#name-resolution-cost" class="section-name selfRef">Resolution Cost</a>
         </h3>
-<p id="section-9.10-1">Trust Chain resolution adds fetches to metadata discovery. An attacker who can cause a verifier to discover many peers can use this to amplify load on the verifier and on Superiors' fetch endpoints. Verifiers SHOULD cache per <a href="#caching" class="auto internal xref">Section 6.2</a>, and SHOULD bound the rate of Trust Chain resolution.<a href="#section-9.10-1" class="pilcrow">¶</a></p>
+<p id="section-9.12-1">Trust Chain resolution adds fetches to metadata discovery. An attacker who can cause a verifier to discover many peers can use this to amplify load on the verifier and on Superiors' fetch endpoints. Verifiers SHOULD cache per <a href="#caching" class="auto internal xref">Section 6.5</a>, and SHOULD bound the rate of Trust Chain resolution.<a href="#section-9.12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1953,13 +2032,16 @@ li > p:last-of-type:only-child {
 <p id="section-12-1"><em>Note: This section is to be removed before publication.</em><a href="#section-12-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12-2.1">
-          <p id="section-12-2.1.1">Whether verifiers should re-fetch the Entity Configuration once on a digest mismatch, as a fallback for Entities that do not sequence updates per <a href="#updates" class="auto internal xref">Section 7</a>.<a href="#section-12-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-12-2.1.1">Whether to register <code>trust_mark_types</code> and <code>trust_mark_types_required</code> in the "OAuth Authorization Server Metadata" <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and "OAuth Protected Resource Metadata" <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> registries, and <code>trust_mark_required</code> in the "OAuth Extensions Error Registry" <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-12-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-12-2.2">
-          <p id="section-12-2.2.1">Whether to register <code>trust_mark_types</code> and <code>trust_mark_types_required</code> in the "OAuth Authorization Server Metadata" <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and "OAuth Protected Resource Metadata" <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> registries, and <code>trust_mark_required</code> in the "OAuth Extensions Error Registry" <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-12-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-12-2.2.1">Whether to also define a digest companion for a <code>jwks_uri</code> that appears directly in Entity Type metadata, as a plain-JSON alternative to <code>signed_jwks_uri</code> outside well-known documents.<a href="#section-12-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-12-2.3">
-          <p id="section-12-2.3.1">Whether to also define a digest companion for a <code>jwks_uri</code> that appears directly in Entity Type metadata, as a plain-JSON alternative to <code>signed_jwks_uri</code> outside well-known documents.<a href="#section-12-2.3.1" class="pilcrow">¶</a></p>
+          <p id="section-12-2.3.1">Whether members of a <code>well_known_bindings</code> member value need a registry, or whether the naming convention in <a href="#well-known-bindings" class="auto internal xref">Section 5</a> is enough.<a href="#section-12-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-12-2.4">
+          <p id="section-12-2.4.1">Whether OpenID Federation and <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span> should state that Entity Type metadata MAY omit members a covered document carries (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>), rather than this specification stating it alone.<a href="#section-12-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1972,10 +2054,57 @@ li > p:last-of-type:only-child {
 <p id="section-13-1"><em>Note: This section is to be removed before publication.</em><a href="#section-13-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-13-2.1">
-          <p id="section-13-2.1.1">-00<a href="#section-13-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-13-2.1.1">-01<a href="#section-13-2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-13-2.1.2.1">
-              <p id="section-13-2.1.2.1.1">Initial draft.<a href="#section-13-2.1.2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-13-2.1.2.1.1">Moved the <code>jwks_uri</code> fetch after the covered document's digest check, so no URL from an unauthenticated document is dereferenced (<a href="#verification" class="auto internal xref">Section 6</a>, <a href="#unauthenticated-content" class="auto internal xref">Section 9.6</a>).<a href="#section-13-2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.2">
+              <p id="section-13-2.1.2.2.1">Added <a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>: Resolved Metadata governs members it carries, and Entity Type metadata MAY omit members a covered document carries.<a href="#section-13-2.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.3">
+              <p id="section-13-2.1.2.3.1">Added <a href="#peer-identifiers" class="auto internal xref">Section 6.1</a>: a protocol whose peer identifier is not an <code>https</code> URL defines the mapping to an Entity Identifier.<a href="#section-13-2.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.4">
+              <p id="section-13-2.1.2.4.1">Added <a href="#outcomes" class="auto internal xref">Section 6.3</a>: fail closed, transient versus authoritative failures, and at most one rate-limited Entity Configuration re-fetch on a digest mismatch. Resolves the first open issue of -00.<a href="#section-13-2.1.2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.5">
+              <p id="section-13-2.1.2.5.1">Added <a href="#protocol-key-compromise" class="auto internal xref">Section 9.4</a>: revocation skips the update overlap, and residual exposure is the Entity Configuration lifetime.<a href="#section-13-2.1.2.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.6">
+              <p id="section-13-2.1.2.6.1">Scoped <code>trust_mark_types_required</code> to role at document granularity (<a href="#trust-mark-types-required" class="auto internal xref">Section 8.2</a>).<a href="#section-13-2.1.2.6.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.7">
+              <p id="section-13-2.1.2.7.1">Named the convention for extension members that carry digests of a URL-valued member (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>).<a href="#section-13-2.1.2.7.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.8">
+              <p id="section-13-2.1.2.8.1">A <code>metadata_policy</code> that marks a member <code>essential</code> requires it in Entity Type metadata; the permission to omit covers only members no policy requires (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>, <a href="#metadata-policy-bypass" class="auto internal xref">Section 9.8</a>).<a href="#section-13-2.1.2.8.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.9">
+              <p id="section-13-2.1.2.9.1">A verifier whose policy requires federation verification fetches <code>jwks_uri</code> only after the Trust Chain validates (<a href="#verification" class="auto internal xref">Section 6</a>).<a href="#section-13-2.1.2.9.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.10">
+              <p id="section-13-2.1.2.10.1">Stated the key source when Resolved Metadata carries <code>jwks</code>, <code>signed_jwks_uri</code>, or <code>jwks_uri</code> (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>).<a href="#section-13-2.1.2.10.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.11">
+              <p id="section-13-2.1.2.11.1">Members whose value must equal the Entity Identifier, such as <code>issuer</code>, may appear in both Entity Type metadata and the covered document (<a href="#metadata-precedence" class="auto internal xref">Section 6.2</a>).<a href="#section-13-2.1.2.11.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.12">
+              <p id="section-13-2.1.2.12.1">A 404 or 410 for the Entity Configuration is authoritative non-participation; transient failures may be cached briefly as failures (<a href="#outcomes" class="auto internal xref">Section 6.3</a>).<a href="#section-13-2.1.2.12.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.13">
+              <p id="section-13-2.1.2.13.1">Stated what verification detects when the verifier's policy does not require it (<a href="#without-trust-chain" class="auto internal xref">Section 9.7</a>).<a href="#section-13-2.1.2.13.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-13-2.1.2.14">
+              <p id="section-13-2.1.2.14.1">Editorial: BCP 14 boilerplate, parenthesized cross-references.<a href="#section-13-2.1.2.14.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="section-13-2.2">
+          <p id="section-13-2.2.1">-00<a href="#section-13-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-13-2.2.2.1">
+              <p id="section-13-2.2.2.1.1">Initial draft.<a href="#section-13-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
@@ -1995,45 +2124,53 @@ li > p:last-of-type:only-child {
 <a href="#section-15" class="section-number selfRef">15. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
-<dt id="RFC9530">[RFC9530]</dt>
+<dt id="RFC9110">[RFC9110]</dt>
       <dd>
-<span class="refAuthor">Polli, R.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Digest Fields"</span>, <span class="seriesInfo">RFC 9530</span>, <span class="seriesInfo">DOI 10.17487/RFC9530</span>, <time datetime="2024-02" class="refDate">February 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9530">https://www.rfc-editor.org/info/rfc9530</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC6749">[RFC6749]</dt>
-      <dd>
-<span class="refAuthor">Hardt, D., Ed.</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework"</span>, <span class="seriesInfo">RFC 6749</span>, <span class="seriesInfo">DOI 10.17487/RFC6749</span>, <time datetime="2012-10" class="refDate">October 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6749">https://www.rfc-editor.org/info/rfc6749</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8414">[RFC8414]</dt>
-      <dd>
-<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8615">[RFC8615]</dt>
       <dd>
 <span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8615">https://www.rfc-editor.org/info/rfc8615</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC7515">[RFC7515]</dt>
+<dt id="RFC8174">[RFC8174]</dt>
       <dd>
-<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9110">[RFC9110]</dt>
-      <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9111">[RFC9111]</dt>
       <dd>
 <span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Caching"</span>, <span class="seriesInfo">STD 98</span>, <span class="seriesInfo">RFC 9111</span>, <span class="seriesInfo">DOI 10.17487/RFC9111</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9111">https://www.rfc-editor.org/info/rfc9111</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="OpenID.Federation">[OpenID.Federation]</dt>
-      <dd>
-<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_1.html">https://openid.net/specs/openid-federation-1_1.html</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC7519">[RFC7519]</dt>
       <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7519">https://www.rfc-editor.org/info/rfc7519</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC6749">[RFC6749]</dt>
+      <dd>
+<span class="refAuthor">Hardt, D., Ed.</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework"</span>, <span class="seriesInfo">RFC 6749</span>, <span class="seriesInfo">DOI 10.17487/RFC6749</span>, <time datetime="2012-10" class="refDate">October 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6749">https://www.rfc-editor.org/info/rfc6749</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC9728">[RFC9728]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9728">https://www.rfc-editor.org/info/rfc9728</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation">[OpenID.Federation]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_1.html">https://openid.net/specs/openid-federation-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+      <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9530">[RFC9530]</dt>
+      <dd>
+<span class="refAuthor">Polli, R.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Digest Fields"</span>, <span class="seriesInfo">RFC 9530</span>, <span class="seriesInfo">DOI 10.17487/RFC9530</span>, <time datetime="2024-02" class="refDate">February 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9530">https://www.rfc-editor.org/info/rfc9530</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7515">[RFC7515]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8414">[RFC8414]</dt>
+    <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -2042,6 +2179,10 @@ li > p:last-of-type:only-child {
 <a href="#section-16" class="section-number selfRef">16. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
       </h2>
 <dl class="references">
+<dt id="OpenID.Federation.Connect">[OpenID.Federation.Connect]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation for OpenID Connect 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-connect-1_1.html">https://openid.net/specs/openid-federation-connect-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5011">[RFC5011]</dt>
       <dd>
 <span class="refAuthor">StJohns, M.</span>, <span class="refTitle">"Automated Updates of DNS Security (DNSSEC) Trust Anchors"</span>, <span class="seriesInfo">STD 74</span>, <span class="seriesInfo">RFC 5011</span>, <span class="seriesInfo">DOI 10.17487/RFC5011</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5011">https://www.rfc-editor.org/info/rfc5011</a>&gt;</span>. </dd>
@@ -2051,12 +2192,8 @@ li > p:last-of-type:only-child {
 <span class="refAuthor">Hardt, D.</span>, <span class="refTitle">"AAuth Protocol"</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol">https://datatracker.ietf.org/doc/draft-hardt-oauth-aauth-protocol</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-webbotauth-httpsig-protocol">[I-D.ietf-webbotauth-httpsig-protocol]</dt>
-      <dd>
-<span class="refAuthor">Meunier, T.</span> and <span class="refAuthor">S. Major</span>, <span class="refTitle">"HTTP Message Signatures for automated traffic"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webbotauth-httpsig-protocol-00</span>, <time datetime="2026-09-01" class="refDate">1 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00">https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="OpenID.Federation.Connect">[OpenID.Federation.Connect]</dt>
     <dd>
-<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M.B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A.Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation for OpenID Connect 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-connect-1_1.html">https://openid.net/specs/openid-federation-connect-1_1.html</a>&gt;</span>. </dd>
+<span class="refAuthor">Meunier, T.</span> and <span class="refAuthor">S. Major</span>, <span class="refTitle">"HTTP Message Signatures for automated traffic"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webbotauth-httpsig-protocol-00</span>, <time datetime="2026-09-01" class="refDate">1 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00">https://datatracker.ietf.org/doc/html/draft-ietf-webbotauth-httpsig-protocol-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -2134,7 +2271,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-oauth-protected-resource">
 <a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-oauth-protected-resource" class="section-name selfRef">OAuth Protected Resource</a>
         </h3>
-<p id="appendix-A.2-1">Excerpt of the Entity Configuration of the protected resource in <a href="#trust-mark-types-required" class="auto internal xref">Section 8.2</a>, served at <code>https://api.bank.example/.well-known/openid-federation</code>. Its covered document lists the account-servicing type, and the Trust Mark here completes what it needs to hold that type in its protected resource role <a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2-1">Excerpt of the Entity Configuration of the protected resource in <a href="#trust-mark-types-required" class="auto internal xref">Section 8.2</a>, served at <code>https://api.bank.example/.well-known/openid-federation</code>. Its covered document lists the account-servicing type, and the Trust Mark here completes what it needs to hold that type in its protected resource role (<a href="#trust-mark-types" class="auto internal xref">Section 8.1</a>).<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="appendix-A.2-2">
 <pre>"well_known_bindings": {
   "oauth-protected-resource": {
@@ -2162,7 +2299,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-aauth-person-server">
 <a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-aauth-person-server" class="section-name selfRef">AAuth Person Server</a>
         </h3>
-<p id="appendix-A.3-1">Excerpt of the Entity Configuration of an AAuth Person Server, served at <code>https://ps.example/.well-known/openid-federation</code>, during a protocol key rotation <a href="#updates" class="auto internal xref">Section 7</a>. AAuth defines no Entity Type, so the Entity Configuration declares <code>federation_entity</code> <a href="#well-known-bindings" class="auto internal xref">Section 5</a>. <code>jwks_digests</code> holds the digests of the current and the replacement JWK Set.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.3-1">Excerpt of the Entity Configuration of an AAuth Person Server, served at <code>https://ps.example/.well-known/openid-federation</code>, during a protocol key rotation (<a href="#updates" class="auto internal xref">Section 7</a>). AAuth defines no Entity Type, so the Entity Configuration declares <code>federation_entity</code> (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>). <code>jwks_digests</code> holds the digests of the current and the replacement JWK Set.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="appendix-A.3-2">
 <pre>"metadata": {
   "federation_entity": {}
@@ -2197,7 +2334,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-web-bot-auth-key-directory">
 <a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-web-bot-auth-key-directory" class="section-name selfRef">Web Bot Auth Key Directory</a>
         </h3>
-<p id="appendix-A.4-1">A Web Bot Auth agent publishes its keys at <code>https://agent.example/.well-known/http-message-signatures-directory</code> (<span>[<a href="#I-D.ietf-webbotauth-httpsig-protocol" class="cite xref">I-D.ietf-webbotauth-httpsig-protocol</a>]</span>, Section 8.1). That covered document is itself a JWK Set, so it has no <code>jwks_uri</code>, and its entry has only <code>digests</code>. The keys in it are the agent's protocol keys. Web Bot Auth defines no Entity Type, so the Entity Configuration declares <code>federation_entity</code> <a href="#well-known-bindings" class="auto internal xref">Section 5</a>. Excerpt of the Entity Configuration, served at <code>https://agent.example/.well-known/openid-federation</code>:<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.4-1">A Web Bot Auth agent publishes its keys at <code>https://agent.example/.well-known/http-message-signatures-directory</code> (<span>[<a href="#I-D.ietf-webbotauth-httpsig-protocol" class="cite xref">I-D.ietf-webbotauth-httpsig-protocol</a>]</span>, Section 8.1). That covered document is itself a JWK Set, so it has no <code>jwks_uri</code>, and its entry has only <code>digests</code>. The keys in it are the agent's protocol keys. Web Bot Auth defines no Entity Type, so the Entity Configuration declares <code>federation_entity</code> (<a href="#well-known-bindings" class="auto internal xref">Section 5</a>). Excerpt of the Entity Configuration, served at <code>https://agent.example/.well-known/openid-federation</code>:<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="appendix-A.4-2">
 <pre>"metadata": {
   "federation_entity": {}
@@ -2285,7 +2422,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-why-a-claim-and-not-metadat">
 <a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-why-a-claim-and-not-metadat" class="section-name selfRef">Why a Claim and Not Metadata</a>
         </h3>
-<p id="appendix-B.1-1">Metadata in OpenID Federation is subject to the Entity's Superiors. A Superior can supply or override metadata parameters in its Subordinate Statement and constrain them with <code>metadata_policy</code>, and verifiers use the resulting Resolved Metadata (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). The digests are the Entity's own statements about documents only it serves. A Superior that supplied or altered them would have to coordinate every document update and key rotation with the Entity <a href="#updates" class="auto internal xref">Section 7</a>, which is the dependency this specification removes <a href="#why-entity-signs" class="auto internal xref">Appendix B.4</a>. A Superior that constrained <code>digest_alg</code> would add little, since a verifier enforces the algorithms it accepts from its own policy.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.1-1">Metadata in OpenID Federation is subject to the Entity's Superiors. A Superior can supply or override metadata parameters in its Subordinate Statement and constrain them with <code>metadata_policy</code>, and verifiers use the resulting Resolved Metadata (<span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, Section 6.1). The digests are the Entity's own statements about documents only it serves. A Superior that supplied or altered them would have to coordinate every document update and key rotation with the Entity (<a href="#updates" class="auto internal xref">Section 7</a>), which is the dependency this specification removes (<a href="#why-entity-signs" class="auto internal xref">Appendix B.4</a>). A Superior that constrained <code>digest_alg</code> would add little, since a verifier enforces the algorithms it accepts from its own policy.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-B.1-2">A claim in the Entity Configuration is signed only by the Entity and is outside metadata policy, as <code>jwks</code> and <code>trust_marks</code> are. It also belongs to no Entity Type, so a verifier finds the entry for a document by its well-known suffix alone. No mapping from protocols to Entity Types is needed, and no per-protocol profile.<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2348,8 +2485,7 @@ li > p:last-of-type:only-child {
                 <code>jwks_digests</code>
 </td>
               <td class="text-left" rowspan="1" colspan="1">Plain JSON, unchanged</td>
-              <td class="text-left" rowspan="1" colspan="1">Entity re-signs its Entity Configuration <a href="#updates" class="auto internal xref">Section 7</a>
-</td>
+              <td class="text-left" rowspan="1" colspan="1">Entity re-signs its Entity Configuration (<a href="#updates" class="auto internal xref">Section 7</a>)</td>
             </tr>
           </tbody>
         </table>
@@ -2361,7 +2497,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-why-arrays-of-digests">
 <a href="#appendix-B.6" class="section-number selfRef">B.6. </a><a href="#name-why-arrays-of-digests" class="section-name selfRef">Why Arrays of Digests</a>
         </h3>
-<p id="appendix-B.6-1">A digest pins one version of a document, and verifiers cache Entity Configurations for their lifetime. Listing old and new digests together lets the Entity pre-publish the new digest, as OpenID Federation pre-publishes a Trust Anchor's next key. The alternative is to require verifiers to re-fetch on mismatch. That shifts the cost to every verifier and creates a forced-fetch vector, so it is recorded as an open issue.<a href="#appendix-B.6-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.6-1">A digest pins one version of a document, and verifiers cache Entity Configurations for their lifetime. Listing old and new digests together lets the Entity pre-publish the new digest, as OpenID Federation pre-publishes a Trust Anchor's next key. The alternative is to require verifiers to re-fetch on mismatch. That shifts the cost to every verifier and creates a forced-fetch vector, so a verifier MAY re-fetch at most once per mismatch, rate-limited per Entity (<a href="#outcomes" class="auto internal xref">Section 6.3</a>), and the overlap is what keeps that rare.<a href="#appendix-B.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="why-digest-alg-and-base64url">
@@ -2401,7 +2537,7 @@ li > p:last-of-type:only-child {
         <h3 id="name-why-requirements-are-keyed-">
 <a href="#appendix-B.11" class="section-number selfRef">B.11. </a><a href="#name-why-requirements-are-keyed-" class="section-name selfRef">Why Requirements Are Keyed by Well-Known Suffix</a>
         </h3>
-<p id="appendix-B.11-1">A server often deals with counterparties in several roles, and may require different accreditation of each. The counterparty's well-known suffix names its role without another identifier. It is also the suffix of the document in which the counterparty lists its own <code>trust_mark_types</code>.<a href="#appendix-B.11-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.11-1">A server often deals with counterparties in several roles, and may require different accreditation of each. The counterparty's well-known suffix names the role its document describes, without another identifier. It is also the suffix of the document in which the counterparty lists its own <code>trust_mark_types</code>. This is role at document granularity, which is as far as the suffix reaches (<a href="#trust-mark-types-required" class="auto internal xref">Section 8.2</a>).<a href="#appendix-B.11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
